@@ -1,0 +1,48 @@
+﻿<Page
+    x:Class="FluentExplorer.Views.IndexPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:FluentExplorer.Views"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:viewModels="using:FluentExplorer.ViewModels"
+    xmlns:controls="using:Microsoft.UI.Xaml.Controls"
+    xmlns:models="using:FluentExplorer.Models"
+    xmlns:controls1="using:FluentExplorer.Controls"
+    mc:Ignorable="d">
+    <Page.DataContext>
+        <viewModels:IndexViewModel/>
+    </Page.DataContext>
+    <ScrollViewer>
+        <controls:ItemsRepeater 
+            DoubleTapped="UIElement_OnDoubleTapped"
+            ItemsSource="{x:Bind DataContext.(viewModels:IndexViewModel.Disks)}">
+            <controls:ItemsRepeater.ItemTemplate>
+                <DataTemplate x:DataType="models:DiskModel">
+                    <Grid DataContext="{x:Bind}" Padding="4">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <controls1:StorageItemImage Padding="0, 0, 0, 4" Grid.RowSpan="3" StorageItem="{x:Bind StorageFolder}"/>
+                        <TextBlock Grid.Row="0" Grid.Column="1" Text="{x:Bind StorageFolder.DisplayName}" />
+                        <ProgressBar Grid.Row="1" Grid.Column="1" Maximum="{x:Bind Capacity}" Value="{x:Bind Current}"/>
+                        <StackPanel Grid.Row="2" Grid.Column="1" Orientation="Horizontal">
+                            <TextBlock Text="{x:Bind CurrentHuman}"/>
+                            <TextBlock Text="/"/>
+                            <TextBlock Text="{x:Bind CapacityHuman}"/>
+                        </StackPanel>
+                    </Grid>
+                </DataTemplate>
+            </controls:ItemsRepeater.ItemTemplate>
+            <controls:ItemsRepeater.Layout>
+                <controls:UniformGridLayout MinItemWidth="250" />
+            </controls:ItemsRepeater.Layout>
+        </controls:ItemsRepeater>
+    </ScrollViewer>
+</Page>
