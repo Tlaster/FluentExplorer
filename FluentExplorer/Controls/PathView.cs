@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Linq;
 using Windows.System;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using FluentExplorer.Common;
+using Microsoft.Toolkit.Uwp.UI.Extensions;
 using Microsoft.UI.Xaml.Controls;
 
 namespace FluentExplorer.Controls
@@ -18,15 +17,17 @@ namespace FluentExplorer.Controls
             nameof(Path), typeof(string), typeof(PathView), new PropertyMetadata(default, OnPropertyChangedCallback));
 
         public static readonly DependencyProperty RootNameProperty = DependencyProperty.Register(
-           nameof(RootName), typeof(string), typeof(PathView), new PropertyMetadata(default, OnPropertyChangedCallback));
+            nameof(RootName), typeof(string), typeof(PathView),
+            new PropertyMetadata(default, OnPropertyChangedCallback));
 
         public static readonly DependencyProperty RootPathProperty = DependencyProperty.Register(
-            nameof(RootPath), typeof(string), typeof(PathView), new PropertyMetadata(default, OnPropertyChangedCallback));
+            nameof(RootPath), typeof(string), typeof(PathView),
+            new PropertyMetadata(default, OnPropertyChangedCallback));
 
         private Button _expandButton;
         private Image _folderImage;
         private bool _isTyping;
-        private ItemsRepeater _listBox;
+        private ItemsRepeater _repeater;
         private TextBox _pathTextBox;
         private Button _refreshButton;
 
@@ -68,19 +69,10 @@ namespace FluentExplorer.Controls
             _expandButton = GetTemplateChild("PathViewExpandButton") as Button;
             _refreshButton = GetTemplateChild("PathViewRefreshButton") as Button;
             _refreshButton.Click += OnRefreshButtonOnClick;
-            _listBox = GetTemplateChild("PathViewListBox") as ItemsRepeater;
+            _repeater = GetTemplateChild("PathViewListBox") as ItemsRepeater;
             (GetTemplateChild("ToggleGrid") as Grid).Tapped += OnToggleGridTapped;
+            
             UpdateListBox();
-            //_listBox.SetBinding(ItemsControl.ItemsSourceProperty, new Binding
-            //{
-            //    Source = _pathList
-            //});
-            //_pathTextBox?.SetBinding(TextBox.TextProperty, new Binding
-            //{
-            //    Mode = BindingMode.TwoWay,
-            //    Path = new PropertyPath("Path"),
-            //    Source = this
-            //});
         }
 
         private void OnToggleGridTapped(object sender, TappedRoutedEventArgs e)
@@ -91,21 +83,14 @@ namespace FluentExplorer.Controls
         private void UpdateListBox()
         {
             var path = Path;
-            if (!string.IsNullOrEmpty(RootPath) || !string.IsNullOrEmpty(RootName))
-            {
-                path = path.TrimStart(RootPath);
-            }
+            if (!string.IsNullOrEmpty(RootPath) || !string.IsNullOrEmpty(RootName)) path = path.TrimStart(RootPath);
 
-            var result = path?.Split(System.IO.Path.DirectorySeparatorChar)?.Where(it => !string.IsNullOrEmpty(it)).ToList() ?? new List<string>();
-            if (!string.IsNullOrEmpty(RootName))
-            {
-                result.Insert(0, RootName);
-            }
+            var result =
+                path?.Split(System.IO.Path.DirectorySeparatorChar)?.Where(it => !string.IsNullOrEmpty(it)).ToList() ??
+                new List<string>();
+            if (!string.IsNullOrEmpty(RootName)) result.Insert(0, RootName);
 
-            if (_listBox != null)
-            {
-                _listBox.ItemsSource = result;
-            }
+            if (_repeater != null) _repeater.ItemsSource = result;
         }
 
         private void OnPathTextBoxOnLostFocus(object sender, RoutedEventArgs e)
@@ -126,14 +111,16 @@ namespace FluentExplorer.Controls
 
         private void OnPathTextBoxOnKeyDown(object sender, KeyRoutedEventArgs e)
         {
-            if (e.Key == VirtualKey.Enter) RequestNavigation?.Invoke(this, Path);
-
-            SwitchToListBox();
+            if (e.Key == VirtualKey.Enter)
+            {
+                RequestNavigation?.Invoke(this, Path);
+                SwitchToListBox();
+            }
         }
 
         private void SwitchToTextBox()
         {
-            _listBox.Visibility = Visibility.Collapsed;
+            _repeater.Visibility = Visibility.Collapsed;
             _pathTextBox.Visibility = Visibility.Visible;
             _pathTextBox.Focus(FocusState.Programmatic);
         }
@@ -141,7 +128,7 @@ namespace FluentExplorer.Controls
         private void SwitchToListBox()
         {
             _pathTextBox.Visibility = Visibility.Collapsed;
-            _listBox.Visibility = Visibility.Visible;
+            _repeater.Visibility = Visibility.Visible;
         }
 
         private void OnRefreshButtonOnClick(object sender, RoutedEventArgs e)
@@ -152,20 +139,14 @@ namespace FluentExplorer.Controls
         private static void OnPropertyChangedCallback(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             if (e.Property == PathProperty) (d as PathView).OnPathChanged(e.NewValue as string);
-            if (e.Property == RootNameProperty || e.Property == RootPathProperty)
-            {
-                (d as PathView).UpdateListBox();
-            }
+            if (e.Property == RootNameProperty || e.Property == RootPathProperty) (d as PathView).UpdateListBox();
         }
 
         private void OnPathChanged(string newPath)
         {
             if (_isTyping) return;
             UpdateListBox();
-            if (_pathTextBox != null)
-            {
-                _pathTextBox.Text = newPath;
-            }
+            if (_pathTextBox != null) _pathTextBox.Text = newPath;
         }
     }
 }

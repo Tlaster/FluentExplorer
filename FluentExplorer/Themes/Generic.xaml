@@ -28,17 +28,16 @@
                         </Grid.ColumnDefinitions>
                         <Image Name="PathViewFolderImage"/>
                         <Grid Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Name="ToggleGrid" Background="Transparent"/>
-                        <TextBox BorderThickness="0" TextWrapping="NoWrap" Grid.Column="1" Visibility="Collapsed" AcceptsReturn="False" Name="PathViewTextBox"/>
-                        <controls1:ItemsRepeater Grid.Column="1" Name="PathViewListBox" HorizontalAlignment="Left">
+                        <TextBox TextWrapping="NoWrap" Padding="5" Grid.Column="1" Visibility="Collapsed" AcceptsReturn="False" Name="PathViewTextBox"/>
+                        <controls1:ItemsRepeater VerticalAlignment="Stretch" Grid.Column="1" Name="PathViewListBox" HorizontalAlignment="Left">
                             <controls1:ItemsRepeater.Layout>
                                 <controls1:StackLayout Orientation="Horizontal"/>
                             </controls1:ItemsRepeater.Layout>
                             <controls1:ItemsRepeater.ItemTemplate>
                                 <DataTemplate>
-                                    <StackPanel Padding="4" Orientation="Horizontal">
-                                        <TextBlock VerticalAlignment="Stretch" Text="{Binding}"/>
-                                        <icon:IconView Icon="ChevronRight" VerticalAlignment="Stretch" FontSize="8" FontWeight="ExtraBold"/>
-                                    </StackPanel>
+                                    <controls1:SplitButton Padding="7" Background="Transparent" BorderThickness="0">
+                                        <TextBlock Text="{Binding}"/>
+                                    </controls1:SplitButton>
                                 </DataTemplate>
                             </controls1:ItemsRepeater.ItemTemplate>
                         </controls1:ItemsRepeater>
