@@ -119,6 +119,8 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Common\Extensions.cs" />
+    <Compile Include="Controls\PathView.cs" />
     <Compile Include="Controls\StorageItemImage.cs" />
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
@@ -181,6 +183,9 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="Bug10.Icon">
+      <Version>1.0.10</Version>
+    </PackageReference>
     <PackageReference Include="Humanizer">
       <Version>2.6.2</Version>
     </PackageReference>

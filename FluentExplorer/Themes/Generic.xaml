@@ -2,13 +2,53 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:FluentExplorer"
-    xmlns:controls="using:FluentExplorer.Controls">
+    xmlns:controls="using:FluentExplorer.Controls"
+    xmlns:controls1="using:Microsoft.UI.Xaml.Controls"
+    xmlns:icon="using:Bug10.Icon">
 
     <Style TargetType="controls:StorageItemImage" >
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="controls:StorageItemImage">
                     <Image Name="StorageItemImage_Image" />
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+    <Style TargetType="controls:PathView">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="controls:PathView">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <Image Name="PathViewFolderImage"/>
+                        <Grid Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Name="ToggleGrid" Background="Transparent"/>
+                        <TextBox BorderThickness="0" TextWrapping="NoWrap" Grid.Column="1" Visibility="Collapsed" AcceptsReturn="False" Name="PathViewTextBox"/>
+                        <controls1:ItemsRepeater Grid.Column="1" Name="PathViewListBox" HorizontalAlignment="Left">
+                            <controls1:ItemsRepeater.Layout>
+                                <controls1:StackLayout Orientation="Horizontal"/>
+                            </controls1:ItemsRepeater.Layout>
+                            <controls1:ItemsRepeater.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel Padding="4" Orientation="Horizontal">
+                                        <TextBlock VerticalAlignment="Stretch" Text="{Binding}"/>
+                                        <icon:IconView Icon="ChevronRight" VerticalAlignment="Stretch" FontSize="8" FontWeight="ExtraBold"/>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </controls1:ItemsRepeater.ItemTemplate>
+                        </controls1:ItemsRepeater>
+                        <Button Grid.Column="2" Name="PathViewExpandButton">
+                            <icon:IconView Icon="ChevronDown"/>
+                        </Button>
+                        <Button Grid.Column="3" Name="PathViewRefreshButton">
+                            <SymbolIcon Symbol="Refresh"/>
+                        </Button>
+                    </Grid>
                 </ControlTemplate>
             </Setter.Value>
         </Setter>

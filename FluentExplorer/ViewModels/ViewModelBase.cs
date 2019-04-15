@@ -11,6 +11,7 @@ namespace FluentExplorer.ViewModels
 {
     public abstract class FolderViewModelBase : ViewModelBase
     {
+        public abstract string Path { get; }
         public abstract Task<bool> TryGoUpAsync(Frame frame);
     }
 

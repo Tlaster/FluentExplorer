@@ -44,5 +44,22 @@ namespace FluentExplorer.Views
                 }
             }
         }
+
+        private void StorageNavigationFrame_OnNavigated(object sender, NavigationEventArgs e)
+        {
+            if (e.Parameter is FolderViewModelBase viewModel)
+            {
+                StoragePathView.Path = viewModel.Path;
+            }
+            else if (e.SourcePageType == typeof(IndexPage))
+            {
+                StoragePathView.Path = "";
+            }
+        }
+
+        private void StoragePathView_OnRequestNavigation(object sender, string e)
+        {
+            
+        }
     }
 }

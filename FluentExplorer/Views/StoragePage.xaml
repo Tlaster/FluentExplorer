@@ -6,6 +6,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:controls="using:Microsoft.UI.Xaml.Controls"
+    xmlns:controls1="using:FluentExplorer.Controls"
     mc:Ignorable="d">
 
     <Grid>
@@ -40,14 +41,14 @@
                 </Button>
             </StackPanel>
             <Grid Grid.Column="1">
-                <AutoSuggestBox/>
+                <controls1:PathView RootName="This PC" x:Name="StoragePathView" RequestNavigation="StoragePathView_OnRequestNavigation"/>
             </Grid>
         </Grid>
         <Grid Grid.Row="1" Grid.Column="0">
             <controls:TreeView></controls:TreeView>
         </Grid>
         <Grid Grid.Row="1" Grid.Column="1">
-            <Frame SourcePageType="local:IndexPage" Name="StorageNavigationFrame"/>
+            <Frame Navigated="StorageNavigationFrame_OnNavigated" SourcePageType="local:IndexPage" Name="StorageNavigationFrame"/>
         </Grid>
     </Grid>
 </Page>

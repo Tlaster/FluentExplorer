@@ -15,6 +15,7 @@ namespace FluentExplorer.ViewModels
         public LocalFolderViewModel(StorageFolder folder)
         {
             CurrentFolder = folder;
+            Path = folder.Path;
             Init();
         }
 
@@ -32,6 +33,8 @@ namespace FluentExplorer.ViewModels
             }
             IsLoading = false;
         }
+
+        public override string Path { get; }
 
         public override async Task<bool> TryGoUpAsync(Frame frame)
         {

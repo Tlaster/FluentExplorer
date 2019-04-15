@@ -15,7 +15,7 @@
     <ScrollViewer>
         <controls:ItemsRepeater 
             DoubleTapped="GridViewDoubleTapped"
-            ItemsSource="{x:Bind DataContext.(viewModels:LocalFolderViewModel.StorageItems)}">
+            ItemsSource="{x:Bind DataContext.(viewModels:LocalFolderViewModel.StorageItems), Mode=OneWay}">
             <controls:ItemsRepeater.ItemTemplate>
                 <DataTemplate x:DataType="storage:IStorageItem">
                     <Grid DataContext="{x:Bind}" Padding="4">
