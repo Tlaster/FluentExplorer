@@ -41,7 +41,7 @@
                 </Button>
             </StackPanel>
             <Grid Grid.Column="1">
-                <controls1:PathView RootName="This PC" x:Name="StoragePathView" RequestNavigation="StoragePathView_OnRequestNavigation"/>
+                <controls1:PathView RootName="This PC" RequestSubFolder="StoragePathView_OnRequestSubFolder" x:Name="StoragePathView" RequestNavigation="StoragePathView_OnRequestNavigation"/>
             </Grid>
         </Grid>
         <Grid Grid.Row="1" Grid.Column="0">

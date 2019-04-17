@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
@@ -13,6 +14,7 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
+using FluentExplorer.Controls;
 using FluentExplorer.ViewModels;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
@@ -57,9 +59,38 @@ namespace FluentExplorer.Views
             }
         }
 
-        private void StoragePathView_OnRequestNavigation(object sender, string e)
+        private async void StoragePathView_OnRequestNavigation(object sender, string e)
         {
-            
+            if (string.IsNullOrEmpty(e))
+            {
+                StorageNavigationFrame.Navigate(typeof(IndexPage));
+            }
+            else
+            {
+                try
+                {
+                    StorageNavigationFrame.Navigate(typeof(LocalFolderPage),
+                        new LocalFolderViewModel(await StorageFolder.GetFolderFromPathAsync(e)));
+                }
+                catch (Exception exception)
+                {
+                    Debug.WriteLine(exception.Message);
+                    Debug.WriteLine(exception.StackTrace);
+                }
+            }
+        }
+
+        private async void StoragePathView_OnRequestSubFolder(object sender, RequestSubFolderEventArgs e)
+        {
+            if (string.IsNullOrEmpty(e.Path))
+            {
+            }
+            else
+            {
+                var folder = await StorageFolder.GetFolderFromPathAsync(e.Path);
+                var subFolders = await folder.GetFoldersAsync();
+                e.Callback.Invoke(subFolders.Select(it => new RequestSubFolderPathModel(it.Name, it.Path)).ToList());
+            }
         }
     }
 }
