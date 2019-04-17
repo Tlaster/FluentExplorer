@@ -11,44 +11,46 @@
 
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto"/>
-            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
         <Grid Grid.ColumnSpan="2">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
             <StackPanel Orientation="Horizontal">
-                <Button 
+                <Button
                     Click="GobackClick"
                     IsEnabled="{x:Bind StorageNavigationFrame.CanGoBack, Mode=OneWay}">
-                    <SymbolIcon Symbol="Back"/>
+                    <SymbolIcon Symbol="Back" />
                 </Button>
-                <Button 
+                <Button
                     Click="{x:Bind StorageNavigationFrame.GoForward}"
                     IsEnabled="{x:Bind StorageNavigationFrame.CanGoForward, Mode=OneWay}">
-                    <SymbolIcon Symbol="Forward"/>
+                    <SymbolIcon Symbol="Forward" />
                 </Button>
-                <Button 
+                <Button
                     Click="GoupClick">
-                    <SymbolIcon Symbol="Up"/>
+                    <SymbolIcon Symbol="Up" />
                 </Button>
             </StackPanel>
             <Grid Grid.Column="1">
-                <controls1:PathView RootName="This PC" RequestSubFolder="StoragePathView_OnRequestSubFolder" x:Name="StoragePathView" RequestNavigation="StoragePathView_OnRequestNavigation"/>
+                <controls1:PathView RootName="This PC" RequestSubFolder="StoragePathView_OnRequestSubFolder"
+                                    x:Name="StoragePathView" RequestNavigation="StoragePathView_OnRequestNavigation" />
             </Grid>
         </Grid>
         <Grid Grid.Row="1" Grid.Column="0">
-            <controls:TreeView></controls:TreeView>
+            <controls:TreeView />
         </Grid>
         <Grid Grid.Row="1" Grid.Column="1">
-            <Frame Navigated="StorageNavigationFrame_OnNavigated" SourcePageType="local:IndexPage" Name="StorageNavigationFrame"/>
+            <Frame Navigated="StorageNavigationFrame_OnNavigated" SourcePageType="local:IndexPage"
+                   Name="StorageNavigationFrame" />
         </Grid>
     </Grid>
 </Page>

@@ -29,14 +29,16 @@ namespace FluentExplorer.Controls
 
     public class RequestSubFolderPathModel
     {
-        public RequestSubFolderPathModel(string name, string path)
+        public RequestSubFolderPathModel(string name, string path, ImageSource icon)
         {
             Name = name;
             Path = path;
+            Icon = icon;
         }
 
         public string Name { get; }
         public string Path { get; }
+        public ImageSource Icon { get; }                                                                                                       
 
     }
 
@@ -54,7 +56,7 @@ namespace FluentExplorer.Controls
             }
         }
 
-        public PathModel(string name, string path) : base(name, path)
+        public PathModel(string name, string path) : base(name, path, null)
         {
         }
 
@@ -216,6 +218,8 @@ namespace FluentExplorer.Controls
         private void OnPathTextBoxOnGotFocus(object sender, RoutedEventArgs e)
         {
             _isTyping = true;
+            _pathTextBox.SelectionStart = _pathTextBox.Text.Length;
+            _pathTextBox.SelectionLength = 0;
         }
 
         private void OnPathTextBoxOnTextChanged(object sender, TextChangedEventArgs e)
@@ -227,8 +231,10 @@ namespace FluentExplorer.Controls
         {
             if (e.Key == VirtualKey.Enter)
             {
+                _isTyping = false;
                 RequestNavigation?.Invoke(this, Path);
                 SwitchToListBox();
+                OnPathChanged(Path);
             }
         }
 

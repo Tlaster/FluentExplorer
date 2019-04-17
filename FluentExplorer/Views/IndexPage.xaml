@@ -10,9 +10,6 @@
     xmlns:models="using:FluentExplorer.Models"
     xmlns:controls1="using:FluentExplorer.Controls"
     mc:Ignorable="d">
-    <Page.DataContext>
-        <viewModels:IndexViewModel/>
-    </Page.DataContext>
     <ScrollViewer>
         <controls:ItemsRepeater 
             DoubleTapped="UIElement_OnDoubleTapped"

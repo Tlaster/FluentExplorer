@@ -27,6 +27,8 @@ namespace FluentExplorer.Views
         public IndexPage()
         {
             this.InitializeComponent();
+            DataContext = IndexViewModel.Instance;
+            NavigationCacheMode = NavigationCacheMode.Required;
         }
 
         private void UIElement_OnDoubleTapped(object sender, DoubleTappedRoutedEventArgs e)

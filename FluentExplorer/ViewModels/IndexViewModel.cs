@@ -12,9 +12,11 @@ namespace FluentExplorer.ViewModels
 {
     public class IndexViewModel : ViewModelBase
     {
+        public static IndexViewModel Instance { get; } = new IndexViewModel();
+
         public ObservableCollection<DiskModel> Disks { get; } = new ObservableCollection<DiskModel>();
 
-        public IndexViewModel()
+        private IndexViewModel()
         {
             Init();
         }

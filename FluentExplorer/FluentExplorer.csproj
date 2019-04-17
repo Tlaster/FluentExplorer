@@ -148,6 +148,8 @@
     <None Include="FluentExplorer_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Assets\Folder.svg" />
+    <Content Include="Assets\HardDrive.svg" />
     <Content Include="Properties\Default.rd.xml" />
     <Content Include="Assets\LockScreenLogo.scale-200.png" />
     <Content Include="Assets\SplashScreen.scale-200.png" />

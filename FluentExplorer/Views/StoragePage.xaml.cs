@@ -13,6 +13,7 @@ using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Media.Imaging;
 using Windows.UI.Xaml.Navigation;
 using FluentExplorer.Controls;
 using FluentExplorer.ViewModels;
@@ -84,12 +85,13 @@ namespace FluentExplorer.Views
         {
             if (string.IsNullOrEmpty(e.Path))
             {
+                e.Callback.Invoke(IndexViewModel.Instance.Disks.Select(it => new RequestSubFolderPathModel(it.StorageFolder.DisplayName, it.StorageFolder.Path, new SvgImageSource(new Uri("ms-appx:///Assets/HardDrive.svg")))).ToList());
             }
             else
             {
                 var folder = await StorageFolder.GetFolderFromPathAsync(e.Path);
                 var subFolders = await folder.GetFoldersAsync();
-                e.Callback.Invoke(subFolders.Select(it => new RequestSubFolderPathModel(it.Name, it.Path)).ToList());
+                e.Callback.Invoke(subFolders.Select(it => new RequestSubFolderPathModel(it.Name, it.Path, new SvgImageSource(new Uri("ms-appx:///Assets/Folder.svg")))).ToList());
             }
         }
     }
