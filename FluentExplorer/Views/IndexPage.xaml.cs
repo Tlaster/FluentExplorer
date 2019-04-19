@@ -35,7 +35,7 @@ namespace FluentExplorer.Views
         {
             if (e.OriginalSource is FrameworkElement element && element.DataContext is DiskModel item)
             {
-                Frame.Navigate(typeof(LocalFolderPage), new LocalFolderViewModel(item.StorageFolder));
+                Frame.Navigate(typeof(LocalFolderPage), new LocalFolderViewModel(item.StorageFolder, (DataContext as IndexViewModel).Path));
             }
         }
     }

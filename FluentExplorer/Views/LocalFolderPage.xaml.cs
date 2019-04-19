@@ -41,7 +41,7 @@ namespace FluentExplorer.Views
                 switch (item)
                 {
                     case StorageFolder folder:
-                        Frame.Navigate(typeof(LocalFolderPage), new LocalFolderViewModel(folder));
+                        Frame.Navigate(typeof(LocalFolderPage), new LocalFolderViewModel(folder, (DataContext as LocalFolderViewModel).Path));
                         break;
                     case StorageFile file:
                         break;

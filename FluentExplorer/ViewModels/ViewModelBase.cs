@@ -6,12 +6,13 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using Windows.UI.Xaml.Controls;
+using FluentExplorer.Controls;
 
 namespace FluentExplorer.ViewModels
 {
     public abstract class FolderViewModelBase : ViewModelBase
     {
-        public abstract string Path { get; }
+        public abstract PathModel Path { get; }
         public abstract Task<bool> TryGoUpAsync(Frame frame);
     }
 

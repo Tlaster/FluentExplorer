@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Storage;
@@ -52,12 +53,16 @@ namespace FluentExplorer.Views
         {
             if (e.Parameter is FolderViewModelBase viewModel)
             {
-                StoragePathView.Path = viewModel.Path;
+                StoragePathView.CurrentFolderPath = viewModel.Path;
             }
-            else if (e.SourcePageType == typeof(IndexPage))
+            else if ((e.Content as FrameworkElement)?.DataContext is FolderViewModelBase vm)
             {
-                StoragePathView.Path = "";
+                StoragePathView.CurrentFolderPath = vm.Path;
             }
+            //else if (e.SourcePageType == typeof(IndexPage))
+            //{
+            //    StoragePathView.CurrentFolderPath = null;
+            //}
         }
 
         private async void StoragePathView_OnRequestNavigation(object sender, string e)
@@ -71,7 +76,7 @@ namespace FluentExplorer.Views
                 try
                 {
                     StorageNavigationFrame.Navigate(typeof(LocalFolderPage),
-                        new LocalFolderViewModel(await StorageFolder.GetFolderFromPathAsync(e)));
+                        new LocalFolderViewModel(await StorageFolder.GetFolderFromPathAsync(e), await GeneratePath(e)));
                 }
                 catch (Exception exception)
                 {
@@ -79,6 +84,30 @@ namespace FluentExplorer.Views
                     Debug.WriteLine(exception.StackTrace);
                 }
             }
+        }
+
+        private async Task<PathModel> GeneratePath(string path)
+        {
+            var folder = await StorageFolder.GetFolderFromPathAsync(path);
+            folder = await folder.GetParentAsync();
+            if (folder == null)
+            {
+                return IndexViewModel.Instance.Path;
+            }
+            var pathModel = new PathModel(folder.DisplayName, folder.Path);
+            var temp = pathModel;
+            while (folder != null)
+            {
+                folder = await folder.GetParentAsync();
+                if (folder != null)
+                {
+                    temp.Parent = new PathModel(folder.DisplayName, folder.Path);
+                    temp = temp.Parent;
+                }
+            }
+
+            temp.Parent = IndexViewModel.Instance.Path;
+            return pathModel;
         }
 
         private async void StoragePathView_OnRequestSubFolder(object sender, RequestSubFolderEventArgs e)

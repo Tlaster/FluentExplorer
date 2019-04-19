@@ -6,16 +6,20 @@ using System.Text;
 using System.Threading.Tasks;
 using Windows.Storage;
 using Windows.UI.Xaml.Controls;
+using FluentExplorer.Controls;
 using FluentExplorer.Views;
 
 namespace FluentExplorer.ViewModels
 {
     public class LocalFolderViewModel : FolderViewModelBase
     {
-        public LocalFolderViewModel(StorageFolder folder)
+        public LocalFolderViewModel(StorageFolder folder, PathModel parentPathModel)
         {
             CurrentFolder = folder;
-            Path = folder.Path;
+            Path = new PathModel(folder.DisplayName, folder.Path)
+            {
+                Parent = parentPathModel
+            };
             Init();
         }
 
@@ -34,14 +38,15 @@ namespace FluentExplorer.ViewModels
             IsLoading = false;
         }
 
-        public override string Path { get; }
+
+        public override PathModel Path { get; }
 
         public override async Task<bool> TryGoUpAsync(Frame frame)
         {
             var parent = await CurrentFolder.GetParentAsync();
             if (parent != null)
             {
-                frame.Navigate(typeof(LocalFolderPage), new LocalFolderViewModel(parent));
+                frame.Navigate(typeof(LocalFolderPage), new LocalFolderViewModel(parent, Path));
                 return true;
             }
             return false;

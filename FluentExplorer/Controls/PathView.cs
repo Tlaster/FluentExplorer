@@ -1,14 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
 using System.Runtime.CompilerServices;
 using Windows.System;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
-using FluentExplorer.Common;
 using Microsoft.Toolkit.Uwp.UI.Extensions;
 using Microsoft.UI.Xaml.Controls;
 using SplitButton = Microsoft.UI.Xaml.Controls.SplitButton;
@@ -38,13 +36,18 @@ namespace FluentExplorer.Controls
 
         public string Name { get; }
         public string Path { get; }
-        public ImageSource Icon { get; }                                                                                                       
-
+        public ImageSource Icon { get; }
     }
 
     public class PathModel : RequestSubFolderPathModel, INotifyPropertyChanged
     {
         private List<RequestSubFolderPathModel> _subFolders;
+
+        public PathModel(string name, string path) : base(name, path, null)
+        {
+        }
+
+        public PathModel Parent { get; set; }
 
         public List<RequestSubFolderPathModel> SubFolders
         {
@@ -54,10 +57,6 @@ namespace FluentExplorer.Controls
                 _subFolders = value;
                 OnPropertyChanged();
             }
-        }
-
-        public PathModel(string name, string path) : base(name, path, null)
-        {
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -70,19 +69,12 @@ namespace FluentExplorer.Controls
 
     public sealed class PathView : Control
     {
-        public static readonly DependencyProperty PathProperty = DependencyProperty.Register(
-            nameof(Path), typeof(string), typeof(PathView), new PropertyMetadata(default, OnPropertyChangedCallback));
-
-        public static readonly DependencyProperty RootNameProperty = DependencyProperty.Register(
-            nameof(RootName), typeof(string), typeof(PathView),
-            new PropertyMetadata(default, OnPropertyChangedCallback));
-
-        public static readonly DependencyProperty RootPathProperty = DependencyProperty.Register(
-            nameof(RootPath), typeof(string), typeof(PathView),
-            new PropertyMetadata(default, OnPropertyChangedCallback));
-
         public static readonly DependencyProperty FolderImageSourceProperty = DependencyProperty.Register(
             nameof(FolderImageSource), typeof(ImageSource), typeof(PathView),
+            new PropertyMetadata(default, OnPropertyChangedCallback));
+
+        public static readonly DependencyProperty CurrentFolderPathProperty = DependencyProperty.Register(
+            nameof(CurrentFolderPath), typeof(PathModel), typeof(PathView),
             new PropertyMetadata(default, OnPropertyChangedCallback));
 
         private Button _expandButton;
@@ -97,28 +89,16 @@ namespace FluentExplorer.Controls
             DefaultStyleKey = typeof(PathView);
         }
 
+        public PathModel CurrentFolderPath
+        {
+            get => (PathModel) GetValue(CurrentFolderPathProperty);
+            set => SetValue(CurrentFolderPathProperty, value);
+        }
+
         public ImageSource FolderImageSource
         {
             get => (ImageSource) GetValue(FolderImageSourceProperty);
             set => SetValue(FolderImageSourceProperty, value);
-        }
-
-        public string RootName
-        {
-            get => (string) GetValue(RootNameProperty);
-            set => SetValue(RootNameProperty, value);
-        }
-
-        public string RootPath
-        {
-            get => (string) GetValue(RootPathProperty);
-            set => SetValue(RootPathProperty, value);
-        }
-
-        public string Path
-        {
-            get => (string) GetValue(PathProperty);
-            set => SetValue(PathProperty, value);
         }
 
         public event EventHandler<string> RequestNavigation;
@@ -151,9 +131,7 @@ namespace FluentExplorer.Controls
                 var isPrimary = element.FindAscendantByName("PrimaryButton") != null;
                 var isSecondary = element.FindAscendantByName("SecondaryButton") != null;
                 if (isPrimary)
-                {
                     RequestNavigation?.Invoke(this, item.Path);
-                }
                 else if (isSecondary)
                 {
                     if (item.SubFolders == null)
@@ -161,28 +139,28 @@ namespace FluentExplorer.Controls
                         var requestSubFolder = RequestSubFolder;
                         if (requestSubFolder != null)
                         {
-                            var flyoutRoot = (root.Flyout as Flyout).Content as FrameworkElement;
-                            var listView = flyoutRoot.FindDescendant<ListView>();
-                            var tag = listView.Tag is bool viewTag && viewTag;
-                            if (!tag)
-                            {
 
-                                void SubFolderItemClicked(object _, ItemClickEventArgs clickEventArgs)
-                                {
-                                    root.Flyout.Hide();
-                                    var clickedModel = clickEventArgs.ClickedItem as RequestSubFolderPathModel;
-                                    RequestNavigation?.Invoke(this, clickedModel.Path);
-                                }
-                                listView.ItemClick += SubFolderItemClicked;
-                                listView.Tag = true;
-                            }
-                            var args = new RequestSubFolderEventArgs(item.Path, list =>
-                            {
-                                item.SubFolders = list;
-                            });
+                            var args = new RequestSubFolderEventArgs(item.Path, list => { item.SubFolders = list; });
                             requestSubFolder.Invoke(this, args);
                         }
                     }
+
+                    var flyoutRoot = (root.Flyout as Flyout).Content as FrameworkElement;
+                    var listView = flyoutRoot.FindDescendant<ListView>();
+                    var tag = listView.Tag is bool viewTag && viewTag;
+                    if (!tag)
+                    {
+                        void SubFolderItemClicked(object _, ItemClickEventArgs clickEventArgs)
+                        {
+                            root.Flyout.Hide();
+                            var clickedModel = clickEventArgs.ClickedItem as RequestSubFolderPathModel;
+                            RequestNavigation?.Invoke(this, clickedModel.Path);
+                        }
+
+                        listView.ItemClick += SubFolderItemClicked;
+                        listView.Tag = true;
+                    }
+
                 }
             }
         }
@@ -194,19 +172,18 @@ namespace FluentExplorer.Controls
 
         private void UpdateListBox()
         {
-            var path = Path;
-            if (!string.IsNullOrEmpty(RootPath) || !string.IsNullOrEmpty(RootName)) path = path.TrimStart(RootPath);
+            if (_repeater == null) return;
+            var result = new List<PathModel>();
+            var path = CurrentFolderPath;
+            while (path != null)
+            {
+                result.Add(path);
+                path = path.Parent;
+            }
 
-            var result =
-                path?.Split(System.IO.Path.DirectorySeparatorChar)
-                    ?.Where(it => !string.IsNullOrEmpty(it))
-                    ?.Select(it =>
-                        new PathModel(it, Path.Substring(0, Path.IndexOf(it, StringComparison.Ordinal) + it.Length)))
-                    ?.ToList() ??
-                new List<PathModel>();
-            if (!string.IsNullOrEmpty(RootName)) result.Insert(0, new PathModel(RootName, RootPath));
-
-            if (_repeater != null) _repeater.ItemsSource = result;
+            result.Reverse();
+            _repeater.ItemsSource = result;
+            _pathTextBox.Text = CurrentFolderPath.Path;
         }
 
         private void OnPathTextBoxOnLostFocus(object sender, RoutedEventArgs e)
@@ -224,7 +201,6 @@ namespace FluentExplorer.Controls
 
         private void OnPathTextBoxOnTextChanged(object sender, TextChangedEventArgs e)
         {
-            Path = _pathTextBox.Text;
         }
 
         private void OnPathTextBoxOnKeyDown(object sender, KeyRoutedEventArgs e)
@@ -232,9 +208,8 @@ namespace FluentExplorer.Controls
             if (e.Key == VirtualKey.Enter)
             {
                 _isTyping = false;
-                RequestNavigation?.Invoke(this, Path);
+                RequestNavigation?.Invoke(this, _pathTextBox.Text);
                 SwitchToListBox();
-                OnPathChanged(Path);
             }
         }
 
@@ -258,17 +233,9 @@ namespace FluentExplorer.Controls
 
         private static void OnPropertyChangedCallback(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            if (e.Property == PathProperty) (d as PathView).OnPathChanged(e.NewValue as string);
-            if (e.Property == RootNameProperty || e.Property == RootPathProperty) (d as PathView).UpdateListBox();
             if (e.Property == FolderImageSourceProperty)
                 (d as PathView)._folderImage.Source = e.NewValue as ImageSource;
-        }
-
-        private void OnPathChanged(string newPath)
-        {
-            if (_isTyping) return;
-            UpdateListBox();
-            if (_pathTextBox != null) _pathTextBox.Text = newPath;
+            if (e.Property == CurrentFolderPathProperty) (d as PathView).UpdateListBox();
         }
     }
 }

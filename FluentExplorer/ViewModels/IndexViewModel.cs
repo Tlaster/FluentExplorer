@@ -6,11 +6,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Windows.Storage;
+using Windows.UI.Xaml.Controls;
+using FluentExplorer.Controls;
 using FluentExplorer.Models;
 
 namespace FluentExplorer.ViewModels
 {
-    public class IndexViewModel : ViewModelBase
+    public class IndexViewModel : FolderViewModelBase
     {
         public static IndexViewModel Instance { get; } = new IndexViewModel();
 
@@ -40,6 +42,12 @@ namespace FluentExplorer.ViewModels
             }).ToList();
             items.ForEach(it => Disks.Add(it));
             IsLoading = false;
+        }
+
+        public override PathModel Path { get; } = new PathModel("This PC", "");
+        public override async Task<bool> TryGoUpAsync(Frame frame)
+        {
+            return false;
         }
     }
 }
