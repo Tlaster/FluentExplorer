@@ -7,6 +7,7 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
+using Microsoft.Toolkit.Uwp.UI.Animations;
 using Microsoft.Toolkit.Uwp.UI.Extensions;
 using Microsoft.UI.Xaml.Controls;
 using SplitButton = Microsoft.UI.Xaml.Controls.SplitButton;
@@ -127,9 +128,9 @@ namespace FluentExplorer.Controls
         {
             if (e.OriginalSource is FrameworkElement element && element.DataContext is PathModel item)
             {
-                var root = element.FindAscendant<SplitButton>();
+                var secondaryButton = element.FindAscendantByName("SecondaryButton") as Button;
                 var isPrimary = element.FindAscendantByName("PrimaryButton") != null;
-                var isSecondary = element.FindAscendantByName("SecondaryButton") != null;
+                var isSecondary = secondaryButton != null;
                 if (isPrimary)
                     RequestNavigation?.Invoke(this, item.Path);
                 else if (isSecondary)
@@ -145,21 +146,34 @@ namespace FluentExplorer.Controls
                         }
                     }
 
-                    var flyoutRoot = (root.Flyout as Flyout).Content as FrameworkElement;
+                    var flyoutRoot = (secondaryButton.Flyout as Flyout).Content as FrameworkElement;
                     var listView = flyoutRoot.FindDescendant<ListView>();
                     var tag = listView.Tag is bool viewTag && viewTag;
+                    var content = secondaryButton.Content as FrameworkElement;
                     if (!tag)
                     {
+                        var centerX = Convert.ToSingle(content.ActualWidth / 2D);
+                        var centerY = Convert.ToSingle(content.ActualHeight / 2D);
                         void SubFolderItemClicked(object _, ItemClickEventArgs clickEventArgs)
                         {
-                            root.Flyout.Hide();
+                            secondaryButton.Flyout.Hide();
                             var clickedModel = clickEventArgs.ClickedItem as RequestSubFolderPathModel;
                             RequestNavigation?.Invoke(this, clickedModel.Path);
                         }
 
+                        secondaryButton.Flyout.Opening += delegate
+                        {
+                            content.Rotate(90, centerX: centerX, centerY: centerY).Start();
+                        };
+                        secondaryButton.Flyout.Closing += delegate
+                        {
+                            content.Rotate(0, centerX: centerX, centerY: centerY).Start();
+                        };
                         listView.ItemClick += SubFolderItemClicked;
                         listView.Tag = true;
+                        content.Rotate(90, centerX: centerX, centerY: centerY).Start();
                     }
+
 
                 }
             }
