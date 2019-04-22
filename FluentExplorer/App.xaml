@@ -8,8 +8,8 @@
         <ResourceDictionary>
             <ResourceDictionary.ThemeDictionaries>
                 <ResourceDictionary x:Key="Light">
-                    <!--<Thickness x:Key="ButtonBorderThemeThickness">0</Thickness>-->
-                    <!--<SolidColorBrush x:Key="ButtonBackground" Color="Transparent"/>
+                    <!--<Thickness x:Key="ButtonBorderThemeThickness">0</Thickness>
+                    <SolidColorBrush x:Key="ButtonBackground" Color="Transparent"/>
                     <SolidColorBrush x:Key="ButtonBackgroundDisabled" Color="Transparent"/>-->
                 </ResourceDictionary>
             </ResourceDictionary.ThemeDictionaries>

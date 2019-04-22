@@ -36,38 +36,47 @@
                             </controls1:ItemsRepeater.Layout>
                             <controls1:ItemsRepeater.ItemTemplate>
                                 <DataTemplate>
-                                    <controls1:SplitButton>
-                                        <controls1:SplitButton.Resources>
+                                    <Grid Name="PathItemRoot">
+                                        <Grid.Resources>
                                             <converters:NullToVisibilityConverter x:Name="NullToVisibilityConverter"/>
-                                        </controls1:SplitButton.Resources>
-                                        <controls1:SplitButton.Flyout>
-                                            <Flyout>
-                                                <Flyout.FlyoutPresenterStyle>
-                                                    <Style TargetType="FlyoutPresenter">
-                                                        <Setter Property="Padding" Value="0"/>
-                                                    </Style>
-                                                </Flyout.FlyoutPresenterStyle>
-                                                <Grid Width="300" MaxHeight="450">
-                                                    <ProgressRing IsActive="True" Visibility="{Binding SubFolders, Converter={StaticResource NullToVisibilityConverter}}" Margin="8"></ProgressRing>
-                                                    <ListView ItemsSource="{Binding SubFolders}" IsItemClickEnabled="True" SelectionMode="None">
-                                                        <ListView.ItemTemplate>
-                                                            <DataTemplate>
-                                                                <Grid>
-                                                                    <Grid.ColumnDefinitions>
-                                                                        <ColumnDefinition Width="Auto"/>
-                                                                        <ColumnDefinition Width="*"/>
-                                                                    </Grid.ColumnDefinitions>
-                                                                    <Image Source="{Binding Icon}" Width="20" Height="20" Margin="0, 0, 8, 0"/>
-                                                                    <TextBlock TextTrimming="CharacterEllipsis" TextWrapping="NoWrap" Grid.Column="1" Text="{Binding Name}"/>
-                                                                </Grid>
-                                                            </DataTemplate>
-                                                        </ListView.ItemTemplate>
-                                                    </ListView>
-                                                </Grid>
-                                            </Flyout>
-                                        </controls1:SplitButton.Flyout>
-                                        <TextBlock Text="{Binding Name}"/>
-                                    </controls1:SplitButton>
+                                        </Grid.Resources>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Button Height="{Binding ElementName=SecondaryButton, Path=ActualHeight}" Name="PrimaryButton">
+                                            <TextBlock Text="{Binding Name}"/>
+                                        </Button>
+                                        <Button Grid.Column="1" Name="SecondaryButton">
+                                            <Button.Flyout>
+                                                <Flyout>
+                                                    <Flyout.FlyoutPresenterStyle>
+                                                        <Style TargetType="FlyoutPresenter">
+                                                            <Setter Property="Padding" Value="0"/>
+                                                        </Style>
+                                                    </Flyout.FlyoutPresenterStyle>
+                                                    <Grid Width="300" MaxHeight="450">
+                                                        <ProgressRing IsActive="True" Visibility="{Binding SubFolders, Converter={StaticResource NullToVisibilityConverter}}" Margin="8"></ProgressRing>
+                                                        <ListView ItemsSource="{Binding SubFolders}" IsItemClickEnabled="True" SelectionMode="None">
+                                                            <ListView.ItemTemplate>
+                                                                <DataTemplate>
+                                                                    <Grid>
+                                                                        <Grid.ColumnDefinitions>
+                                                                            <ColumnDefinition Width="Auto"/>
+                                                                            <ColumnDefinition Width="*"/>
+                                                                        </Grid.ColumnDefinitions>
+                                                                        <Image Source="{Binding Icon}" Width="20" Height="20" Margin="0, 0, 8, 0"/>
+                                                                        <TextBlock TextTrimming="CharacterEllipsis" TextWrapping="NoWrap" Grid.Column="1" Text="{Binding Name}"/>
+                                                                    </Grid>
+                                                                </DataTemplate>
+                                                            </ListView.ItemTemplate>
+                                                        </ListView>
+                                                    </Grid>
+                                                </Flyout>
+                                            </Button.Flyout>
+                                            <icon:IconView Icon="ChevronRightMed"/>
+                                        </Button>
+                                    </Grid>
                                 </DataTemplate>
                             </controls1:ItemsRepeater.ItemTemplate>
                         </controls1:ItemsRepeater>
