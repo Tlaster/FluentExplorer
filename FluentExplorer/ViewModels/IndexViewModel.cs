@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Windows.Storage;
 using Windows.UI.Xaml.Controls;
+using FluentExplorer.Common;
 using FluentExplorer.Controls;
 using FluentExplorer.Models;
 
@@ -26,6 +27,12 @@ namespace FluentExplorer.ViewModels
         private async void Init()
         {
             IsLoading = true;
+            if (!await PermissionHelper.HasFullAccess())
+            {
+                PermissionHelper.RequestPermission();
+                IsLoading = false;
+                return;
+            }
             var list = new[] { "System.FreeSpace", "System.Capacity" };
             var folders = await Task.WhenAll(DriveInfo.GetDrives().Select(it => it.Name)
                 .Select(async it => await StorageFolder.GetFolderFromPathAsync(it)));
