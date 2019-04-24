@@ -23,7 +23,7 @@ namespace FluentExplorer.ViewModels
             Init();
         }
 
-        public ObservableCollection<IStorageItem> StorageItems { get; set; } = new ObservableCollection<IStorageItem>();
+        public ObservableCollection<IStorageItem> StorageItems { get; } = new ObservableCollection<IStorageItem>();
 
         public StorageFolder CurrentFolder { get; }
 
@@ -38,7 +38,6 @@ namespace FluentExplorer.ViewModels
             IsLoading = false;
         }
 
-
         public override PathModel Path { get; }
 
         public override async Task<bool> TryGoUpAsync(Frame frame)
@@ -46,7 +45,7 @@ namespace FluentExplorer.ViewModels
             var parent = await CurrentFolder.GetParentAsync();
             if (parent != null)
             {
-                frame.Navigate(typeof(LocalFolderPage), new LocalFolderViewModel(parent, Path));
+                frame.Navigate(typeof(LocalFolderPage), new LocalFolderViewModel(parent, Path?.Parent?.Parent));
                 return true;
             }
             return false;

@@ -197,7 +197,7 @@ namespace FluentExplorer.Controls
 
             result.Reverse();
             _repeater.ItemsSource = result;
-            _pathTextBox.Text = CurrentFolderPath.Path;
+            _pathTextBox.Text = CurrentFolderPath?.Path ?? string.Empty;
         }
 
         private void OnPathTextBoxOnLostFocus(object sender, RoutedEventArgs e)

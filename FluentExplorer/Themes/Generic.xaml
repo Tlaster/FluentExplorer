@@ -11,7 +11,7 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="controls:StorageItemImage">
-                    <Image Name="StorageItemImage_Image" />
+                    <Image Width="50" Height="50" Name="StorageItemImage_Image" />
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
@@ -49,7 +49,7 @@
                                         </Button>
                                         <Button Grid.Column="1" Name="SecondaryButton">
                                             <Button.Flyout>
-                                                <Flyout>
+                                                <Flyout Placement="Bottom">
                                                     <Flyout.FlyoutPresenterStyle>
                                                         <Style TargetType="FlyoutPresenter">
                                                             <Setter Property="Padding" Value="0"/>

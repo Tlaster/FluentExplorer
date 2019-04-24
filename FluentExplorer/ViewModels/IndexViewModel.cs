@@ -51,7 +51,7 @@ namespace FluentExplorer.ViewModels
             IsLoading = false;
         }
 
-        public override PathModel Path { get; } = new PathModel("This PC", "");
+        public override PathModel Path { get; } = new PathModel(KnownFolders.DocumentsLibrary.Provider.DisplayName, "");
         public override async Task<bool> TryGoUpAsync(Frame frame)
         {
             return false;

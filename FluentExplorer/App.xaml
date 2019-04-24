@@ -6,11 +6,16 @@
 
     <Application.Resources>
         <ResourceDictionary>
+            <Thickness x:Key="PivotItemMargin">0</Thickness>
             <ResourceDictionary.ThemeDictionaries>
                 <ResourceDictionary x:Key="Light">
-                    <!--<Thickness x:Key="ButtonBorderThemeThickness">0</Thickness>
+                    <SolidColorBrush x:Key="ButtonBorderBrush" Color="Transparent"/>
+                    <SolidColorBrush x:Key="ButtonBorderBrushPointerOver" Color="Transparent"/>
+                    <SolidColorBrush x:Key="ButtonBorderBrushPressed" Color="Transparent"/>
+                    <SolidColorBrush x:Key="ButtonBorderBrushDisabled" Color="Transparent"/>
+                    <!--<Thickness x:Key="ButtonBorderThemeThickness">0</Thickness>-->
                     <SolidColorBrush x:Key="ButtonBackground" Color="Transparent"/>
-                    <SolidColorBrush x:Key="ButtonBackgroundDisabled" Color="Transparent"/>-->
+                    <SolidColorBrush x:Key="ButtonBackgroundDisabled" Color="Transparent"/>
                 </ResourceDictionary>
             </ResourceDictionary.ThemeDictionaries>
             <ResourceDictionary.MergedDictionaries>

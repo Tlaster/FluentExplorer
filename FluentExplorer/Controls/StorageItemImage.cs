@@ -25,7 +25,7 @@ namespace FluentExplorer.Controls
 
         public static readonly DependencyProperty ThumbnailModeProperty = DependencyProperty.Register(
             nameof(ThumbnailMode), typeof(ThumbnailMode), typeof(StorageItemImage),
-            new PropertyMetadata(ThumbnailMode.DocumentsView));
+            new PropertyMetadata(ThumbnailMode.SingleItem));
 
         public StorageItemImage()
         {
@@ -53,6 +53,13 @@ namespace FluentExplorer.Controls
 
         private async void OnStorageItemChanged(IStorageItem storageItem)
         {
+            switch (storageItem)
+            {
+                case StorageFolder folder:
+                    break;
+                case StorageFile file:
+                    break;
+            }
             if (storageItem == null)
             {
                 ImageView.Source = null;

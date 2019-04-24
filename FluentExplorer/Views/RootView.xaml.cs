@@ -5,9 +5,12 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
+using Windows.ApplicationModel.Core;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Storage;
+using Windows.UI;
+using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -19,18 +22,26 @@ using Windows.UI.Xaml.Navigation;
 using FluentExplorer.Controls;
 using FluentExplorer.ViewModels;
 
-// The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
+// The User Control item template is documented at https://go.microsoft.com/fwlink/?LinkId=234236
 
 namespace FluentExplorer.Views
 {
-    /// <summary>
-    /// An empty page that can be used on its own or navigated to within a Frame.
-    /// </summary>
-    public sealed partial class StoragePage : Page
+    public sealed partial class RootView
     {
-        public StoragePage()
+        public RootView()
         {
             this.InitializeComponent();
+            StorageNavigationFrame.Navigate(typeof(IndexPage));
+            var coreTitleBar = CoreApplication.GetCurrentView().TitleBar;
+            coreTitleBar.LayoutMetricsChanged += OnCoreTitleBarOnLayoutMetricsChanged;
+            coreTitleBar.ExtendViewIntoTitleBar = true;
+            Window.Current.SetTitleBar(TitleBar);
+            ApplicationView.GetForCurrentView().TitleBar.ButtonBackgroundColor = Colors.Transparent;
+        }
+
+        private void OnCoreTitleBarOnLayoutMetricsChanged(CoreApplicationViewTitleBar sender, object args)
+        {
+            TitleBar.Height = sender.Height;
         }
 
         private void GobackClick(object sender, RoutedEventArgs e)
@@ -42,7 +53,7 @@ namespace FluentExplorer.Views
         {
             if (StorageNavigationFrame.Content is FrameworkElement element && element.DataContext is FolderViewModelBase viewModel)
             {
-                if (!await viewModel.TryGoUpAsync(StorageNavigationFrame))
+                if (!await viewModel.TryGoUpAsync(StorageNavigationFrame) && StorageNavigationFrame.CurrentSourcePageType != typeof(IndexPage))
                 {
                     StorageNavigationFrame.Navigate(typeof(IndexPage));
                 }
@@ -51,6 +62,10 @@ namespace FluentExplorer.Views
 
         private void StorageNavigationFrame_OnNavigated(object sender, NavigationEventArgs e)
         {
+            if (StoragePathView == null)
+            {
+                return;
+            }
             if (e.Parameter is FolderViewModelBase viewModel)
             {
                 StoragePathView.CurrentFolderPath = viewModel.Path;
@@ -59,10 +74,6 @@ namespace FluentExplorer.Views
             {
                 StoragePathView.CurrentFolderPath = vm.Path;
             }
-            //else if (e.SourcePageType == typeof(IndexPage))
-            //{
-            //    StoragePathView.CurrentFolderPath = null;
-            //}
         }
 
         private async void StoragePathView_OnRequestNavigation(object sender, string e)
