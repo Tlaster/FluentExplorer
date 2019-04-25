@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Windows.Storage;
+using Windows.System;
 using Windows.UI.Xaml.Controls;
 using FluentExplorer.Controls;
 using FluentExplorer.Views;
@@ -49,6 +50,11 @@ namespace FluentExplorer.ViewModels
                 return true;
             }
             return false;
+        }
+
+        public void OpenFile(StorageFile file)
+        {
+            Launcher.LaunchFileAsync(file);
         }
     }
 }

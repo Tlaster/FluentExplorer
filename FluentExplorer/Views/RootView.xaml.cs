@@ -19,6 +19,7 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Imaging;
 using Windows.UI.Xaml.Navigation;
+using FluentExplorer.Common;
 using FluentExplorer.Controls;
 using FluentExplorer.ViewModels;
 
@@ -32,11 +33,17 @@ namespace FluentExplorer.Views
         {
             this.InitializeComponent();
             StorageNavigationFrame.Navigate(typeof(IndexPage));
-            var coreTitleBar = CoreApplication.GetCurrentView().TitleBar;
-            coreTitleBar.LayoutMetricsChanged += OnCoreTitleBarOnLayoutMetricsChanged;
-            coreTitleBar.ExtendViewIntoTitleBar = true;
+            CoreApplication.GetCurrentView().TitleBar.Also(it =>
+            {
+                it.LayoutMetricsChanged += OnCoreTitleBarOnLayoutMetricsChanged;
+                it.ExtendViewIntoTitleBar = true;
+            });
             Window.Current.SetTitleBar(TitleBar);
-            ApplicationView.GetForCurrentView().TitleBar.ButtonBackgroundColor = Colors.Transparent;
+            ApplicationView.GetForCurrentView().TitleBar.Also(it =>
+            {
+                it.ButtonBackgroundColor = Colors.Transparent;
+                it.ButtonInactiveBackgroundColor = Colors.Transparent;
+            });
         }
 
         private void OnCoreTitleBarOnLayoutMetricsChanged(CoreApplicationViewTitleBar sender, object args)

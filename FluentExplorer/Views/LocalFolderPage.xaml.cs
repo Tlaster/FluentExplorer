@@ -44,6 +44,7 @@ namespace FluentExplorer.Views
                         Frame.Navigate(typeof(LocalFolderPage), new LocalFolderViewModel(folder, (DataContext as LocalFolderViewModel).Path));
                         break;
                     case StorageFile file:
+                        (DataContext as LocalFolderViewModel).OpenFile(file);
                         break;
                 }
             }

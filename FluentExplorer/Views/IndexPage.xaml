@@ -10,36 +10,32 @@
     xmlns:models="using:FluentExplorer.Models"
     xmlns:controls1="using:FluentExplorer.Controls"
     mc:Ignorable="d">
-    <ScrollViewer>
-        <controls:ItemsRepeater 
-            DoubleTapped="UIElement_OnDoubleTapped"
-            ItemsSource="{x:Bind DataContext.(viewModels:IndexViewModel.Disks)}">
-            <controls:ItemsRepeater.ItemTemplate>
-                <DataTemplate x:DataType="models:DiskModel">
-                    <Grid DataContext="{x:Bind}" Padding="4">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="*"/>
-                            <RowDefinition Height="*"/>
-                            <RowDefinition Height="*"/>
-                        </Grid.RowDefinitions>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
-                        <controls1:StorageItemImage Padding="0, 0, 0, 4" Grid.RowSpan="3" StorageItem="{x:Bind StorageFolder}"/>
-                        <TextBlock Grid.Row="0" Grid.Column="1" Text="{x:Bind StorageFolder.DisplayName}" />
-                        <ProgressBar Grid.Row="1" Grid.Column="1" Maximum="{x:Bind Capacity}" Value="{x:Bind Current}"/>
-                        <StackPanel Grid.Row="2" Grid.Column="1" Orientation="Horizontal">
-                            <TextBlock Text="{x:Bind CurrentHuman}"/>
-                            <TextBlock Text="/"/>
-                            <TextBlock Text="{x:Bind CapacityHuman}"/>
-                        </StackPanel>
-                    </Grid>
-                </DataTemplate>
-            </controls:ItemsRepeater.ItemTemplate>
-            <controls:ItemsRepeater.Layout>
-                <controls:UniformGridLayout MinItemWidth="250" />
-            </controls:ItemsRepeater.Layout>
-        </controls:ItemsRepeater>
-    </ScrollViewer>
+    <GridView 
+        SelectionMode="Extended"
+        DoubleTapped="UIElement_OnDoubleTapped"
+        ItemsSource="{x:Bind DataContext.(viewModels:IndexViewModel.Disks)}">
+        <GridView.ItemTemplate>
+            <DataTemplate x:DataType="models:DiskModel">
+                <Grid DataContext="{x:Bind}" Padding="4">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <controls1:StorageItemImage Padding="0, 0, 0, 4" Grid.RowSpan="3" StorageItem="{x:Bind StorageFolder}"/>
+                    <TextBlock Grid.Row="0" Grid.Column="1" Text="{x:Bind StorageFolder.DisplayName}" />
+                    <ProgressBar Grid.Row="1" Grid.Column="1" Maximum="{x:Bind Capacity}" Value="{x:Bind Current}"/>
+                    <StackPanel Grid.Row="2" Grid.Column="1" Orientation="Horizontal">
+                        <TextBlock Text="{x:Bind CurrentHuman}"/>
+                        <TextBlock Text="/"/>
+                        <TextBlock Text="{x:Bind CapacityHuman}"/>
+                    </StackPanel>
+                </Grid>
+            </DataTemplate>
+        </GridView.ItemTemplate>
+    </GridView>
 </Page>

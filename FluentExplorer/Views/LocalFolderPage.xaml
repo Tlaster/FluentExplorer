@@ -12,25 +12,21 @@
     mc:Ignorable="d"
     d:DataContext="{d:DesignInstance viewModels:LocalFolderViewModel}">
 
-    <ScrollViewer>
-        <controls:ItemsRepeater 
-            DoubleTapped="GridViewDoubleTapped"
-            ItemsSource="{x:Bind DataContext.(viewModels:LocalFolderViewModel.StorageItems), Mode=OneWay}">
-            <controls:ItemsRepeater.ItemTemplate>
-                <DataTemplate x:DataType="storage:IStorageItem">
-                    <Grid DataContext="{x:Bind}" Padding="4">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto" />
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
-                        <controls1:StorageItemImage Padding="0, 0, 0, 4" StorageItem="{x:Bind}" />
-                        <TextBlock TextWrapping="WrapWholeWords" MaxLines="2" TextTrimming="CharacterEllipsis" Grid.Column="1" Text="{x:Bind Name}" />
-                    </Grid>
-                </DataTemplate>
-            </controls:ItemsRepeater.ItemTemplate>
-            <controls:ItemsRepeater.Layout>
-                <controls:UniformGridLayout MinItemWidth="250" />
-            </controls:ItemsRepeater.Layout>
-        </controls:ItemsRepeater>
-    </ScrollViewer>
+    <GridView 
+        SelectionMode="Extended"
+        DoubleTapped="GridViewDoubleTapped"
+        ItemsSource="{x:Bind DataContext.(viewModels:LocalFolderViewModel.StorageItems), Mode=OneWay}">
+        <GridView.ItemTemplate>
+            <DataTemplate x:DataType="storage:IStorageItem">
+                <Grid DataContext="{x:Bind}" Padding="4">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <controls1:StorageItemImage Padding="0, 0, 0, 4" StorageItem="{x:Bind}" />
+                    <TextBlock TextWrapping="WrapWholeWords" MaxLines="2" TextTrimming="CharacterEllipsis" Grid.Column="1" Text="{x:Bind Name}" />
+                </Grid>
+            </DataTemplate>
+        </GridView.ItemTemplate>
+    </GridView>
 </Page>

@@ -13,6 +13,7 @@
 
     <Grid.RowDefinitions>
         <RowDefinition Height="Auto" />
+        <RowDefinition Height="Auto" />
         <RowDefinition Height="*" />
     </Grid.RowDefinitions>
     <Grid.ColumnDefinitions>
@@ -20,21 +21,19 @@
         <ColumnDefinition Width="*" />
     </Grid.ColumnDefinitions>
 
-    <Grid Grid.Row="1" Grid.Column="0" Background="{ThemeResource SystemControlAcrylicWindowBrush}" Width="200">
+    <Grid Grid.Row="2" Grid.Column="0" Background="{ThemeResource SystemControlAcrylicWindowBrush}" Width="200">
         <!--<controls:TreeView />-->
     </Grid>
-    <controls2:DropShadowPanel Grid.Row="1" Grid.Column="1" BlurRadius="16" Color="Gray" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
+    <controls2:DropShadowPanel Grid.Row="2" Grid.Column="1" BlurRadius="16" Color="Gray" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
         <Frame Navigated="StorageNavigationFrame_OnNavigated" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
                    Name="StorageNavigationFrame" />
     </controls2:DropShadowPanel>
-    <controls2:DropShadowPanel BlurRadius="16" Color="Gray" Grid.Row="0" Grid.ColumnSpan="2" Grid.Column="0">
-        <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    <controls2:DropShadowPanel BlurRadius="16" Color="Gray" Grid.Row="1" Grid.ColumnSpan="2" Grid.Column="0">
+        <Grid Background="{ThemeResource SystemControlAcrylicWindowBrush}">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
-            <Grid Name="TitleBar" VerticalAlignment="Top" Background="Transparent"/>
-            <!--TODO: Replace Pivot control-->
             <Pivot>
                 <Pivot.Resources>
                     <Style TargetType="PivotHeaderItem">
@@ -120,4 +119,7 @@
             </Grid>
         </Grid>
     </controls2:DropShadowPanel>
+    <Grid Grid.ColumnSpan="2" Name="TitleBar" VerticalAlignment="Top" Background="{ThemeResource SystemControlAcrylicWindowBrush}">
+        <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Text="Fluent Explorer"></TextBlock>
+    </Grid>
 </Grid>
