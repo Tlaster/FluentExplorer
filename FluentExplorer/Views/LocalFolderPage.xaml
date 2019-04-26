@@ -11,8 +11,67 @@
     xmlns:storage="using:Windows.Storage"
     mc:Ignorable="d"
     d:DataContext="{d:DesignInstance viewModels:LocalFolderViewModel}">
+    <Page.Resources>
+        <MenuFlyout x:Name="FolderFlyout">
+            <MenuFlyoutItem Text="Open">
+                <MenuFlyoutItem.KeyboardAccelerators>
+                    <KeyboardAccelerator Key="O"/>
+                </MenuFlyoutItem.KeyboardAccelerators>
+            </MenuFlyoutItem>
+            <MenuFlyoutItem Text="Open in new window">
+                <MenuFlyoutItem.KeyboardAccelerators>
+                    <KeyboardAccelerator Key="E"/>
+                </MenuFlyoutItem.KeyboardAccelerators>
+            </MenuFlyoutItem>
+            <MenuFlyoutItem Text="Pin to quick access"/>
+            <MenuFlyoutItem Text="Compress to 7z"/>
+            <MenuFlyoutItem Text="Open with Code"/>
+            <MenuFlyoutItem Text="Open PowerShell here"/>
+            <MenuFlyoutSeparator/>
+            <MenuFlyoutItem Text="Cut">
+                <MenuFlyoutItem.Icon>
+                    <SymbolIcon Symbol="Cut"/>
+                </MenuFlyoutItem.Icon>
+                <MenuFlyoutItem.KeyboardAccelerators>
+                    <KeyboardAccelerator Key="T"/>
+                </MenuFlyoutItem.KeyboardAccelerators>
+            </MenuFlyoutItem>
+            <MenuFlyoutItem Text="Copy">
+                <MenuFlyoutItem.Icon>
+                    <SymbolIcon Symbol="Copy"/>
+                </MenuFlyoutItem.Icon>
+                <MenuFlyoutItem.KeyboardAccelerators>
+                    <KeyboardAccelerator Key="C"/>
+                </MenuFlyoutItem.KeyboardAccelerators>
+            </MenuFlyoutItem>
+            <MenuFlyoutSeparator/>
+            <MenuFlyoutItem Text="Remove">
+                <MenuFlyoutItem.Icon>
+                    <SymbolIcon Symbol="Delete"/>
+                </MenuFlyoutItem.Icon>
+                <MenuFlyoutItem.KeyboardAccelerators>
+                    <KeyboardAccelerator Key="D"/>
+                </MenuFlyoutItem.KeyboardAccelerators>
+            </MenuFlyoutItem>
+            <MenuFlyoutItem Text="Rename">
+                <MenuFlyoutItem.Icon>
+                    <SymbolIcon Symbol="Rename"/>
+                </MenuFlyoutItem.Icon>
+                <MenuFlyoutItem.KeyboardAccelerators>
+                    <KeyboardAccelerator Key="M"/>
+                </MenuFlyoutItem.KeyboardAccelerators>
+            </MenuFlyoutItem>
+            <MenuFlyoutSeparator/>
+            <MenuFlyoutItem Text="Property">
+                <MenuFlyoutItem.KeyboardAccelerators>
+                    <KeyboardAccelerator Key="R"/>
+                </MenuFlyoutItem.KeyboardAccelerators>
+            </MenuFlyoutItem>
+        </MenuFlyout>
+    </Page.Resources>
 
     <GridView 
+        Name="ItemsGridView"
         SelectionMode="Extended"
         DoubleTapped="GridViewDoubleTapped"
         ItemsSource="{x:Bind DataContext.(viewModels:LocalFolderViewModel.StorageItems), Mode=OneWay}">

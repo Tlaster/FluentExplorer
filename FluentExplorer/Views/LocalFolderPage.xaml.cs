@@ -28,11 +28,46 @@ namespace FluentExplorer.Views
         {
             this.InitializeComponent();
         }
+
+        protected override void OnTapped(TappedRoutedEventArgs e)
+        {
+            base.OnTapped(e);
+            if (e.OriginalSource is FrameworkElement element && !(element.DataContext is IStorageItem))
+            {
+                ItemsGridView.SelectedItems.Clear();
+            }
+        }
+
+        protected override void OnRightTapped(RightTappedRoutedEventArgs e)
+        {
+            base.OnRightTapped(e);
+            if (e.OriginalSource is FrameworkElement element)
+            {
+                switch (element.DataContext)
+                {
+                    case StorageFolder folder:
+                        
+                        if (!ItemsGridView.SelectedItems.Any() && !ItemsGridView.SelectedItems.Contains(folder))
+                        {
+                            ItemsGridView.SelectedItems.Add(folder);
+                        }
+                        FolderFlyout.ShowAt(this, e.GetPosition(this));
+                        break;
+                    case StorageFile file:
+                        break;
+                    default:
+                        
+                        break;
+                }
+            }
+        }
+
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
             this.DataContext = e.Parameter;
         }
+
 
         private void GridViewDoubleTapped(object sender, DoubleTappedRoutedEventArgs e)
         {
