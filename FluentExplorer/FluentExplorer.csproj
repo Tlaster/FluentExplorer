@@ -158,7 +158,6 @@
     <AppxManifest Include="Package.appxmanifest">
       <SubType>Designer</SubType>
     </AppxManifest>
-    <Content Include="Assets\Win32Interop\Win32Interop.exe.config" />
     <None Include="FluentExplorer_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>

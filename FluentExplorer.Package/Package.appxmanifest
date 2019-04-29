@@ -2,27 +2,25 @@
 
 <Package
   xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10"
-  xmlns:mp="http://schemas.microsoft.com/appx/2014/phone/manifest"
   xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10"
   xmlns:rescap="http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities"
   xmlns:desktop="http://schemas.microsoft.com/appx/manifest/desktop/windows10"
-  IgnorableNamespaces="uap mp rescap">
+  IgnorableNamespaces="uap rescap">
 
   <Identity
-    Name="94f2fb96-5021-4ce4-bab7-a88f9de72f96"
+    Name="moe.tlaster.FluentExplorer"
     Publisher="CN=Asahi"
     Version="1.0.0.0" />
 
-  <mp:PhoneIdentity PhoneProductId="94f2fb96-5021-4ce4-bab7-a88f9de72f96" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
-
   <Properties>
     <DisplayName>FluentExplorer</DisplayName>
-    <PublisherDisplayName>Asahi</PublisherDisplayName>
-    <Logo>Assets\StoreLogo.png</Logo>
+    <PublisherDisplayName>Tlaster</PublisherDisplayName>
+    <Logo>Images\StoreLogo.png</Logo>
   </Properties>
 
   <Dependencies>
     <TargetDeviceFamily Name="Windows.Universal" MinVersion="10.0.0.0" MaxVersionTested="10.0.0.0" />
+    <TargetDeviceFamily Name="Windows.Desktop" MinVersion="10.0.14393.0" MaxVersionTested="10.0.14393.0" />
   </Dependencies>
 
   <Resources>
@@ -32,21 +30,21 @@
   <Applications>
     <Application Id="App"
       Executable="$targetnametoken$.exe"
-      EntryPoint="FluentExplorer.App">
+      EntryPoint="$targetentrypoint$">
       <uap:VisualElements
         DisplayName="FluentExplorer"
-        Square150x150Logo="Assets\Square150x150Logo.png"
-        Square44x44Logo="Assets\Square44x44Logo.png"
         Description="FluentExplorer"
-        BackgroundColor="transparent">
-        <uap:DefaultTile Wide310x150Logo="Assets\Wide310x150Logo.png"/>
-        <uap:SplashScreen Image="Assets\SplashScreen.png" />
+        BackgroundColor="transparent"
+        Square150x150Logo="Images\Square150x150Logo.png"
+        Square44x44Logo="Images\Square44x44Logo.png">
+        <uap:DefaultTile Wide310x150Logo="Images\Wide310x150Logo.png" />
+        <uap:SplashScreen Image="Images\SplashScreen.png" />
       </uap:VisualElements>
       <Extensions>
-        <!--<uap:Extension Category="windows.appService">
+        <uap:Extension Category="windows.appService">
           <uap:AppService Name="CommunicationService" />
-        </uap:Extension>-->
-        <!--<desktop:Extension Category="windows.fullTrustProcess" Executable="Assets\Win32Interop\Win32Interop.exe"/>-->
+        </uap:Extension>
+        <desktop:Extension Category="windows.fullTrustProcess" Executable="Win32Interop\Win32Interop.exe"/>
       </Extensions>
     </Application>
   </Applications>
@@ -55,6 +53,6 @@
     <Capability Name="internetClient" />
     <uap:Capability Name="removableStorage" />
     <rescap:Capability Name="broadFileSystemAccess" />
-    <!--<rescap:Capability Name="runFullTrust" />-->
+    <rescap:Capability Name="runFullTrust" />
   </Capabilities>
 </Package>

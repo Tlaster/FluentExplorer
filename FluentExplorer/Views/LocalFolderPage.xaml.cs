@@ -47,7 +47,7 @@ namespace FluentExplorer.Views
             {
                 switch (element.DataContext)
                 {
-                    case StorageFolder folder:
+                    case IStorageItem folder:
                         if (!ItemsGridView.SelectedItems.Any() && !ItemsGridView.SelectedItems.Contains(folder))
                         {
                             ItemsGridView.SelectedItems.Add(folder);
@@ -91,8 +91,8 @@ namespace FluentExplorer.Views
                         menuFlyout.ShowAt(this, e.GetPosition(this));
                         //FolderFlyout.ShowAt(this, e.GetPosition(this));
                         break;
-                    case StorageFile file:
-                        break;
+                    //case StorageFile file:
+                    //    break;
                     default:
                         
                         break;
