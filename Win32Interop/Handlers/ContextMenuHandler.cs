@@ -63,15 +63,8 @@ namespace Win32Interop.Handlers
             var path = data;
             var shellItem = Shell32.SHCreateItemFromParsingName(path, IntPtr.Zero,
                 typeof(IShellItem).GUID);
-            var folder = Marshal.GetTypedObjectForIUnknown(shellItem.BindToHandler(IntPtr.Zero,
-                    BHID.SFObject, typeof(IShellFolder).GUID),
-                typeof(IShellFolder)) as IShellFolder;
-            var resultPtr = shellItem.GetDisplayName(SIGDN.FILESYSPATH);
-            var ptr = Marshal.PtrToStringUni(resultPtr);
-            Marshal.FreeCoTaskMem(resultPtr);
-            var pids = Shell32.ILFindLastID(Shell32.SHGetIDListFromObject(shellItem));
-            folder.GetUIObjectOf(IntPtr.Zero, 1, new[] {pids}, typeof(IContextMenu).GUID, 0, out var result);
-            var contextMenu = Marshal.GetTypedObjectForIUnknown(result, typeof(IContextMenu)) as IContextMenu;
+            var contextMenu = Marshal.GetTypedObjectForIUnknown(shellItem.BindToHandler(IntPtr.Zero, BHID.SFUIObject, typeof(IContextMenu).GUID),
+                typeof(IContextMenu)) as IContextMenu;
             var menu = User32.CreatePopupMenu();
             contextMenu.QueryContextMenu(menu, 0, 1, int.MaxValue, CMF.NORMAL);
             var res = GenerateMenuInfo(menu);

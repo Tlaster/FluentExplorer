@@ -20,14 +20,14 @@ namespace Win32Interop
         };
         private static AppServiceConnection _connection;
 
-        private static void Main(string[] args)
+        private static async Task Main(string[] args)
         {
             new Thread(ThreadProc).Start();
-            Console.Title = "Hello World";
+            Console.Title = "FluentExplorer Win32Interop";
             Console.WriteLine(
                 "This process runs at the full privileges of the user and has access to the entire public desktop API surface");
             Console.WriteLine("\r\nPress any key to exit ...");
-            Console.ReadLine();
+            Console.ReadKey();
         }
 
         private static async void ThreadProc()
