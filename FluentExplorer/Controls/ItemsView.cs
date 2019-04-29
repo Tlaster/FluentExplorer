@@ -1,10 +1,13 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+using System.Linq;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
+using Microsoft.Toolkit.Extensions;
 using Microsoft.Toolkit.Uwp.UI.Controls;
 
 // The Templated Control item template is documented at https://go.microsoft.com/fwlink/?LinkId=234235
@@ -124,6 +127,17 @@ namespace FluentExplorer.Controls
         protected override void OnTapped(TappedRoutedEventArgs e)
         {
             base.OnTapped(e);
+            if (e.OriginalSource is FrameworkElement element && ItemsSource is IEnumerable items)
+            {
+                var type = element.DataContext?.GetType();
+                var list = items.Cast<object>().ToList();
+                var targetType = list.FirstOrDefault()?.GetType(); 
+                if (type != null && targetType != null && type != targetType)
+                {
+                    // TODO: clear selected items
+                }
+            }
+
         }
 
         protected override void OnApplyTemplate()

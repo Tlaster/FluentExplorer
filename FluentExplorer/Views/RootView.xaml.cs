@@ -32,7 +32,6 @@ namespace FluentExplorer.Views
         public RootView()
         {
             this.InitializeComponent();
-            StorageNavigationFrame.Navigate(typeof(IndexPage));
             CoreApplication.GetCurrentView().TitleBar.Also(it =>
             {
                 it.LayoutMetricsChanged += OnCoreTitleBarOnLayoutMetricsChanged;
@@ -44,7 +43,22 @@ namespace FluentExplorer.Views
                 it.ButtonBackgroundColor = Colors.Transparent;
                 it.ButtonInactiveBackgroundColor = Colors.Transparent;
             });
+            OnReady();
         }
+
+
+        private async void OnReady()
+        {
+            if (!await PermissionHelper.HasFullAccess())
+            {
+                PermissionHelper.RequestPermission().FireAndForget();
+            }
+            else
+            {
+                StorageNavigationFrame.Navigate(typeof(IndexPage));
+            }
+        }
+
 
         private void OnCoreTitleBarOnLayoutMetricsChanged(CoreApplicationViewTitleBar sender, object args)
         {

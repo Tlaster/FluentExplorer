@@ -14,6 +14,8 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using FluentExplorer.ViewModels;
+using Newtonsoft.Json;
+using Win32Interop.Shared.Models;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -38,7 +40,7 @@ namespace FluentExplorer.Views
             }
         }
 
-        protected override void OnRightTapped(RightTappedRoutedEventArgs e)
+        protected override async void OnRightTapped(RightTappedRoutedEventArgs e)
         {
             base.OnRightTapped(e);
             if (e.OriginalSource is FrameworkElement element)
@@ -46,12 +48,48 @@ namespace FluentExplorer.Views
                 switch (element.DataContext)
                 {
                     case StorageFolder folder:
-                        
                         if (!ItemsGridView.SelectedItems.Any() && !ItemsGridView.SelectedItems.Contains(folder))
                         {
                             ItemsGridView.SelectedItems.Add(folder);
                         }
-                        FolderFlyout.ShowAt(this, e.GetPosition(this));
+
+                        var result = await App.Connection.SendMessageAsync(new ValueSet()
+                        {
+                            {"type", "ContextMenu"},
+                            {"data", folder.Path}
+                        });
+                        var menu = JsonConvert.DeserializeObject<List<MenuInfo>>(result.Message["data"].ToString());
+                        var menuFlyout = new MenuFlyout();
+                        menu.ForEach(it =>
+                        {
+                            if (string.IsNullOrEmpty(it.Title))
+                            {
+                                menuFlyout.Items.Add(new MenuFlyoutSeparator());
+                            }
+                            else if (it.SubMenu.Any())
+                            {
+                                //TODO
+                                var item = new MenuFlyoutSubItem()
+                                {
+                                    Text = it.Title
+                                };
+
+                                it.SubMenu.Select(m => new MenuFlyoutItem()
+                                {
+                                    Text = m.Title
+                                }).ToList().ForEach(m => item.Items.Add(m));
+                                menuFlyout.Items.Add(item);
+                            }
+                            else
+                            {
+                                menuFlyout.Items.Add(new MenuFlyoutItem()
+                                {
+                                    Text = it.Title.Replace("&", "")
+                                });
+                            }
+                        });
+                        menuFlyout.ShowAt(this, e.GetPosition(this));
+                        //FolderFlyout.ShowAt(this, e.GetPosition(this));
                         break;
                     case StorageFile file:
                         break;

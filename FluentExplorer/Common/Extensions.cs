@@ -8,6 +8,16 @@ namespace FluentExplorer.Common
 {
     internal static class Extensions
     {
+        public static void FireAndForget(this Task task)
+        {
+
+        }
+
+        public static T ByLazy<T>(Func<T> block)
+        {
+            return new Lazy<T>(block.Invoke).Value;
+        }
+
         public static string TrimStart(this string target, string trimString)
         {
             if (string.IsNullOrEmpty(trimString)) return target;

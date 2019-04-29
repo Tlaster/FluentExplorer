@@ -5,6 +5,7 @@
   xmlns:mp="http://schemas.microsoft.com/appx/2014/phone/manifest"
   xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10"
   xmlns:rescap="http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities"
+  xmlns:desktop="http://schemas.microsoft.com/appx/manifest/desktop/windows10"
   IgnorableNamespaces="uap mp rescap">
 
   <Identity
@@ -41,6 +42,12 @@
         <uap:DefaultTile Wide310x150Logo="Assets\Wide310x150Logo.png"/>
         <uap:SplashScreen Image="Assets\SplashScreen.png" />
       </uap:VisualElements>
+      <Extensions>
+        <uap:Extension Category="windows.appService">
+          <uap:AppService Name="CommunicationService" />
+        </uap:Extension>
+        <desktop:Extension Category="windows.fullTrustProcess" Executable="Assets\Win32Interop\Win32Interop.exe"/>
+      </Extensions>
     </Application>
   </Applications>
 
@@ -48,5 +55,6 @@
     <Capability Name="internetClient" />
     <uap:Capability Name="removableStorage" />
     <rescap:Capability Name="broadFileSystemAccess" />
+    <rescap:Capability Name="runFullTrust" />
   </Capabilities>
 </Package>
