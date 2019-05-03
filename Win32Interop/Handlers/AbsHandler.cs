@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Win32Interop.Handlers
 {
-    abstract class AbsHandler
+    public abstract class AbsHandler
     {
         public abstract string Type { get; }
         public abstract Task<string> Handle(string data);

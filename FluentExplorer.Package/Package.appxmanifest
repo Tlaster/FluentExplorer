@@ -54,5 +54,6 @@
     <uap:Capability Name="removableStorage" />
     <rescap:Capability Name="broadFileSystemAccess" />
     <rescap:Capability Name="runFullTrust" />
+    <rescap:Capability Name="confirmAppClose"/>
   </Capabilities>
 </Package>

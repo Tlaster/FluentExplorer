@@ -73,8 +73,12 @@ namespace Win32Interop
             AppServiceRequestReceivedEventArgs args)
         {
             Console.WriteLine(DateTime.Now.TimeOfDay + "\t(b) Get message from UWP!");
-            var type = args.Request.Message["type"].ToString();
-            var data = args.Request.Message["data"].ToString();
+            var type = args.Request.Message["type"] as string;
+            var data = args.Request.Message["data"] as string;
+            if (type == "Close")
+            {
+                return;
+            }
             var def = args.GetDeferral();
             var handler = _handlers.FirstOrDefault(it => it.Type == type);
             var result = string.Empty;

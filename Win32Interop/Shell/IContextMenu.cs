@@ -4,6 +4,16 @@ using System.Text;
 
 namespace Win32Interop.Shell
 {
+    [Flags]
+    public enum GCS : uint
+    {
+        VERBA = 0,
+        HELPTEXTA = 1,
+        VALIDATEA = 2,
+        VERBW = 4,
+        HELPTEXTW = 5,
+        VALIDATEW = 6
+    }
 
     [Flags]
     public enum CMF : uint
@@ -17,7 +27,7 @@ namespace Win32Interop.Shell
         NODEFAULT = 0x00000020,
         INCLUDESTATIC = 0x00000040,
         EXTENDEDVERBS = 0x00000100,
-        RESERVED = 0xffff0000,
+        RESERVED = 0xffff0000
     }
 
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
@@ -55,13 +65,13 @@ namespace Win32Interop.Shell
     {
         [PreserveSig]
         HResult QueryContextMenu(IntPtr hMenu, uint indexMenu, int idCmdFirst,
-                                 int idCmdLast, CMF uFlags);
+            int idCmdLast, CMF uFlags);
 
         void InvokeCommand(ref CMINVOKECOMMANDINFO pici);
 
         [PreserveSig]
-        HResult GetCommandString(int idcmd, uint uflags, int reserved,
-            [MarshalAs(UnmanagedType.LPStr)] StringBuilder commandstring,
+        HResult GetCommandString(uint idcmd, GCS uflags, uint reserved,
+            [MarshalAs(UnmanagedType.LPWStr)] StringBuilder commandstring,
             int cch);
     }
 
@@ -78,8 +88,11 @@ namespace Win32Interop.Shell
         void InvokeCommand(ref CMINVOKECOMMANDINFO_ByIndex pici);
 
         [PreserveSig]
-        new HResult GetCommandString(int idcmd, uint uflags, int reserved,
-            [MarshalAs(UnmanagedType.LPStr)] StringBuilder commandstring,
+        new HResult GetCommandString(
+            uint idcmd,
+            GCS uflags,
+            uint reserved,
+            [MarshalAs(UnmanagedType.LPWStr)] StringBuilder commandstring,
             int cch);
 
         [PreserveSig]
@@ -93,14 +106,17 @@ namespace Win32Interop.Shell
     {
         [PreserveSig]
         new HResult QueryContextMenu(IntPtr hMenu, uint indexMenu, int idCmdFirst,
-                             int idCmdLast, CMF uFlags);
+            int idCmdLast, CMF uFlags);
 
         [PreserveSig]
         new HResult InvokeCommand(ref CMINVOKECOMMANDINFO pici);
 
         [PreserveSig]
-        new HResult GetCommandString(int idcmd, uint uflags, int reserved,
-            [MarshalAs(UnmanagedType.LPStr)] StringBuilder commandstring,
+        new HResult GetCommandString(
+            uint idcmd,
+            GCS uflags,
+            uint reserved,
+            [MarshalAs(UnmanagedType.LPWStr)] StringBuilder commandstring,
             int cch);
 
         [PreserveSig]
