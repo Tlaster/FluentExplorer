@@ -216,6 +216,12 @@ namespace Win32Interop.Shell
 
     class User32
     {
+        [DllImport("user32.dll")]
+        public static extern IntPtr GetMenu(IntPtr hWnd);
+
+        [DllImport("user32.dll")]
+        public static extern IntPtr GetSubMenu(IntPtr hMenu, int nPos);
+
         [DllImport("user32.dll", EntryPoint = "CreatePopupMenu", CharSet = CharSet.Auto)]
         public static extern IntPtr CreatePopupMenu();
         

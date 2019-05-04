@@ -4,6 +4,15 @@ using System.Text;
 
 namespace Win32Interop.Shell
 {
+    public enum KAN : int
+    {
+        WM_INITMENUPOPUP = 0x0117,
+        WM_MENUCHAR = 0x0120,
+        WM_MENUSELECT = 0x011F,
+        WM_SYSCHAR = 0x0106,
+        WM_SYSCOMMAND = 0x0112
+    }
+
     [Flags]
     public enum GCS : uint
     {
@@ -96,7 +105,7 @@ namespace Win32Interop.Shell
             int cch);
 
         [PreserveSig]
-        HResult HandleMenuMsg(int uMsg, IntPtr wParam, IntPtr lParam);
+        HResult HandleMenuMsg(KAN uMsg, IntPtr wParam, IntPtr lParam);
     }
 
     [ComImport]
@@ -120,10 +129,10 @@ namespace Win32Interop.Shell
             int cch);
 
         [PreserveSig]
-        new HResult HandleMenuMsg(int uMsg, IntPtr wParam, IntPtr lParam);
+        new HResult HandleMenuMsg(KAN uMsg, IntPtr wParam, IntPtr lParam);
 
         [PreserveSig]
-        HResult HandleMenuMsg2(int uMsg, IntPtr wParam, IntPtr lParam,
+        HResult HandleMenuMsg2(KAN uMsg, IntPtr wParam, IntPtr lParam,
             out IntPtr plResult);
     }
 }

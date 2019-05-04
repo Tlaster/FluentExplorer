@@ -106,6 +106,7 @@
     <Compile Include="Handlers\AbsHandler.cs" />
     <Compile Include="Handlers\ContextMenuHandler.cs" />
     <Compile Include="Shell\IContextMenu.cs" />
+    <Compile Include="Shell\IShellExtInit.cs" />
     <Compile Include="Shell\IShellFolder.cs" />
     <Compile Include="Shell\IShellItem.cs" />
     <Compile Include="Program.cs" />

@@ -71,12 +71,12 @@ namespace FluentExplorer.Views
                                 //TODO
                                 var item = new MenuFlyoutSubItem()
                                 {
-                                    Text = it.Title
+                                    Text = it.Title.Replace("&", "")
                                 };
 
                                 it.SubMenu.Select(m => new MenuFlyoutItem()
                                 {
-                                    Text = m.Title
+                                    Text = m.Title.Replace("&", "")
                                 }).ToList().ForEach(m => item.Items.Add(m));
                                 menuFlyout.Items.Add(item);
                             }
