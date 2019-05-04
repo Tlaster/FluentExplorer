@@ -216,6 +216,14 @@ namespace Win32Interop.Shell
 
     class User32
     {
+
+        // Destroys the specified menu and frees any memory that the menu occupies
+        [DllImport("user32",
+            SetLastError = true,
+            CharSet = CharSet.Auto)]
+        public static extern bool DestroyMenu(
+            IntPtr hMenu);
+
         [DllImport("user32.dll")]
         public static extern IntPtr GetMenu(IntPtr hWnd);
 
