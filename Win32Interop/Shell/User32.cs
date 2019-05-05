@@ -231,7 +231,7 @@ namespace Win32Interop.Shell
         public static extern IntPtr GetSubMenu(IntPtr hMenu, int nPos);
 
         [DllImport("user32.dll", EntryPoint = "CreatePopupMenu", CharSet = CharSet.Auto)]
-        public static extern IntPtr CreatePopupMenu();
+        public static extern MenuSafeHandle CreatePopupMenu();
         
         [DllImport("user32.dll")]
         public static extern bool DeleteMenu(IntPtr hMenu, int uPosition,

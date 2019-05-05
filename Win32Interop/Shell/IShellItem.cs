@@ -8,7 +8,7 @@ namespace Win32Interop.Shell
     [Guid("43826d1e-e718-42ee-bc55-a1e261c37bfe")]
     public interface IShellItem
     {
-        IntPtr BindToHandler(IntPtr pbc,
+        IntPtrSafeHandle BindToHandler(IntPtr pbc,
             [MarshalAs(UnmanagedType.LPStruct)]Guid bhid,
             [MarshalAs(UnmanagedType.LPStruct)]Guid riid);
 

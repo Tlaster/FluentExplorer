@@ -110,29 +110,26 @@ namespace Win32Interop.Handlers
         public override async Task<string> Handle(string data)
         {
             var path = data;
-            return Shell32.SHCreateItemFromParsingName(path, IntPtr.Zero, typeof(IShellItem).GUID).UseComObject(
-                shellItem =>
-                    shellItem.BindToHandler(IntPtr.Zero, BHID.SFUIObject, typeof(IContextMenu).GUID).UsePtr(
-                        iContextMenuPtr =>
-                            (Marshal.GetTypedObjectForIUnknown(iContextMenuPtr, typeof(IContextMenu)) as IContextMenu)
-                            .UseComObject(contextMenu =>
-                            {
-                                var menu = User32.CreatePopupMenu();
-                                contextMenu.QueryContextMenu(menu, 0, 0, int.MaxValue, CMF.EXPLORE | CMF.CANRENAME);
-                                Marshal.QueryInterface(iContextMenuPtr, ref IID_IContextMenu3,
-                                    out var iContextMenuPtr3);
-                                return iContextMenuPtr3.UsePtr(contextMenuPtr3 => (Marshal.GetTypedObjectForIUnknown(
-                                        contextMenuPtr3,
-                                        typeof(IContextMenu3))
-                                    as
-                                    IContextMenu3).UseComObject(
-                                    contextMenu3 =>
-                                    {
-                                        var res = GenerateMenuInfo(menu, contextMenu, contextMenu3);
-                                        User32.DestroyMenu(menu);
-                                        return JsonConvert.SerializeObject(res);
-                                    }));
-                            })));
+            using var shellItem =
+                new ComObjDisposable<IShellItem>(
+                    Shell32.SHCreateItemFromParsingName(path, IntPtr.Zero, typeof(IShellItem).GUID));
+            using var iContextMenuPtr =
+                shellItem.Instance.BindToHandler(IntPtr.Zero, BHID.SFUIObject, typeof(IContextMenu).GUID);
+            using var contextMenu = new ComObjDisposable<IContextMenu>(
+                Marshal.GetTypedObjectForIUnknown(iContextMenuPtr.DangerousGetHandle(), typeof(IContextMenu)) as
+                    IContextMenu);
+            using var menu = User32.CreatePopupMenu();
+            contextMenu.Instance.QueryContextMenu(menu.DangerousGetHandle(), 0, 0, int.MaxValue,
+                CMF.EXPLORE | CMF.CANRENAME);
+            Marshal.QueryInterface(iContextMenuPtr.DangerousGetHandle(), ref IID_IContextMenu3,
+                out var iContextMenuPtr3);
+            using var contextMenuPtr3 = new IntPtrSafeHandle(iContextMenuPtr3, true);
+            using var contextMenu3 = new ComObjDisposable<IContextMenu3>(Marshal.GetTypedObjectForIUnknown(
+                contextMenuPtr3.DangerousGetHandle(),
+                typeof(IContextMenu3)) as IContextMenu3);
+            var res = GenerateMenuInfo(menu.DangerousGetHandle(), contextMenu.Instance,
+                contextMenu3.Instance);
+            return JsonConvert.SerializeObject(res);
         }
     }
 }
