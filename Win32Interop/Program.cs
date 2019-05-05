@@ -14,11 +14,13 @@ namespace Win32Interop
 {
     internal class Program
     {
-        private static readonly List<AbsHandler> _handlers = new List<AbsHandler>()
+        private static readonly List<AbsHandler> _handlers = new List<AbsHandler>
         {
-            new ContextMenuHandler(),
+            new ContextMenuHandler()
         };
+
         private static AppServiceConnection _connection;
+        private static readonly ManualResetEvent _manualResetEvent = new ManualResetEvent(false);
 
         private static async Task Main(string[] args)
         {
@@ -26,8 +28,7 @@ namespace Win32Interop
             Console.Title = "FluentExplorer Win32Interop";
             Console.WriteLine(
                 "This process runs at the full privileges of the user and has access to the entire public desktop API surface");
-            Console.WriteLine("\r\nPress any key to exit ...");
-            Console.ReadKey();
+            _manualResetEvent.WaitOne();
         }
 
         private static async void ThreadProc()
@@ -74,18 +75,17 @@ namespace Win32Interop
         {
             Console.WriteLine(DateTime.Now.TimeOfDay + "\t(b) Get message from UWP!");
             var type = args.Request.Message["type"] as string;
-            var data = args.Request.Message["data"] as string;
             if (type == "Close")
             {
+                _manualResetEvent.Set();
                 return;
             }
+
+            var data = args.Request.Message["data"] as string;
             var def = args.GetDeferral();
             var handler = _handlers.FirstOrDefault(it => it.Type == type);
             var result = string.Empty;
-            if (handler != null)
-            {
-                result = await _handlers.FirstOrDefault(it => it.Type == type).Handle(data);
-            }
+            if (handler != null) result = await _handlers.FirstOrDefault(it => it.Type == type).Handle(data);
             def.Complete();
             var valueSet = new ValueSet {{"type", type}, {"data", result}};
             //Send back message to UWP
