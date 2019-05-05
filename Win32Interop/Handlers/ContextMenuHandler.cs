@@ -120,7 +120,7 @@ namespace Win32Interop.Handlers
                     IContextMenu);
             using var menu = User32.CreatePopupMenu();
             contextMenu.Instance.QueryContextMenu(menu.DangerousGetHandle(), 0, 0, int.MaxValue,
-                CMF.EXPLORE | CMF.CANRENAME);
+                CMF.NORMAL);
             Marshal.QueryInterface(iContextMenuPtr.DangerousGetHandle(), ref IID_IContextMenu3,
                 out var iContextMenuPtr3);
             using var contextMenuPtr3 = new IntPtrSafeHandle(iContextMenuPtr3, true);
