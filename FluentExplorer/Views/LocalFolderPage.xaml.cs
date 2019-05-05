@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Windows.Input;
 using Windows.Foundation.Collections;
 using Windows.Storage;
 using Windows.System;
@@ -8,6 +9,7 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Navigation;
+using FluentExplorer.Common;
 using FluentExplorer.ViewModels;
 using Newtonsoft.Json;
 using Win32Interop.Shared.Models;
@@ -33,7 +35,7 @@ namespace FluentExplorer.Views
                 ItemsGridView.SelectedItems.Clear();
         }
 
-        private List<MenuFlyoutItemBase> GenerateMenu(List<MenuInfo> menuInfos)
+        private List<MenuFlyoutItemBase> GenerateMenu(string folderPath, List<MenuInfo> menuInfos)
         {
             return menuInfos.Select(it =>
             {
@@ -69,15 +71,24 @@ namespace FluentExplorer.Views
                     {
                         Text = title
                     };
-                    GenerateMenu(it.SubMenu).ForEach(m => subItem.Items.Add(m));
+                    GenerateMenu(folderPath, it.SubMenu).ForEach(m => subItem.Items.Add(m));
                     result = subItem;
                 }
                 else
                 {
-                    result = new MenuFlyoutItem
+                    var item = new MenuFlyoutItem
                     {
-                        Text = title
+                        Text = title,
+                        Command = MenuCommand,
+                        CommandParameter = new ContextMenuAction
+                        {
+                            Type = ContextMenuAction.ActionType.InvokeCommand,
+                            MenuId = Convert.ToInt32(it.Id),
+                            Path = folderPath,
+                        }
                     };
+                    
+                    result = item;
                 }
 
                 if (keyboardAccelerator != null) result.KeyboardAccelerators.Add(keyboardAccelerator);
@@ -85,6 +96,15 @@ namespace FluentExplorer.Views
                 return result;
             }).ToList();
         }
+
+        public ICommand MenuCommand { get; } = new RelayCommand<ContextMenuAction>(it =>
+        {
+            App.Connection.SendMessageAsync(new ValueSet
+            {
+                {"type", "ContextMenu"},
+                {"data", JsonConvert.SerializeObject(it)}
+            }).FireAndForget();
+        });
 
         protected override async void OnRightTapped(RightTappedRoutedEventArgs e)
         {
@@ -99,11 +119,17 @@ namespace FluentExplorer.Views
                         var result = await App.Connection.SendMessageAsync(new ValueSet
                         {
                             {"type", "ContextMenu"},
-                            {"data", folder.Path}
+                            {
+                                "data", JsonConvert.SerializeObject(new ContextMenuAction
+                                {
+                                    Type = ContextMenuAction.ActionType.ShowMenu,
+                                    Path = folder.Path
+                                })
+                            }
                         });
                         var menu = JsonConvert.DeserializeObject<List<MenuInfo>>(result.Message["data"].ToString());
                         var menuFlyout = new MenuFlyout();
-                        GenerateMenu(menu).ForEach(it => menuFlyout.Items.Add(it));
+                        GenerateMenu(folder.Path, menu).ForEach(it => menuFlyout.Items.Add(it));
                         menuFlyout.ShowAt(this, e.GetPosition(this));
                         //FolderFlyout.ShowAt(this, e.GetPosition(this));
                         break;

@@ -109,7 +109,8 @@ namespace Win32Interop.Handlers
 
         public override async Task<string> Handle(string data)
         {
-            var path = data;
+            var item = JsonConvert.DeserializeObject<ContextMenuAction>(data);
+            var path = item.Path;
             using var shellItem =
                 new ComObjDisposable<IShellItem>(
                     Shell32.SHCreateItemFromParsingName(path, IntPtr.Zero, typeof(IShellItem).GUID));
@@ -121,15 +122,35 @@ namespace Win32Interop.Handlers
             using var menu = User32.CreatePopupMenu();
             contextMenu.Instance.QueryContextMenu(menu.DangerousGetHandle(), 0, 0, int.MaxValue,
                 CMF.NORMAL);
+            Marshal.QueryInterface(iContextMenuPtr.DangerousGetHandle(), ref IID_IContextMenu2,
+                out var iContextMenuPtr2);
             Marshal.QueryInterface(iContextMenuPtr.DangerousGetHandle(), ref IID_IContextMenu3,
                 out var iContextMenuPtr3);
+            using var contextMenuPtr2 = new IntPtrSafeHandle(iContextMenuPtr2, true);
             using var contextMenuPtr3 = new IntPtrSafeHandle(iContextMenuPtr3, true);
             using var contextMenu3 = new ComObjDisposable<IContextMenu3>(Marshal.GetTypedObjectForIUnknown(
                 contextMenuPtr3.DangerousGetHandle(),
                 typeof(IContextMenu3)) as IContextMenu3);
-            var res = GenerateMenuInfo(menu.DangerousGetHandle(), contextMenu.Instance,
-                contextMenu3.Instance);
-            return JsonConvert.SerializeObject(res);
+            using var contextMenu2 = new ComObjDisposable<IContextMenu2>(
+                Marshal.GetTypedObjectForIUnknown(contextMenuPtr2.DangerousGetHandle(), typeof(IContextMenu2)) as
+                    IContextMenu2);
+            if (item.Type == ContextMenuAction.ActionType.ShowMenu)
+            {
+                var res = GenerateMenuInfo(menu.DangerousGetHandle(), contextMenu.Instance,
+                    contextMenu3.Instance);
+                return JsonConvert.SerializeObject(res);
+            }
+            else
+            {
+                var id = item.MenuId;
+                const int SW_SHOWNORMAL = 1;
+                var invoke = new CMINVOKECOMMANDINFO_ByIndex();
+                invoke.cbSize = Marshal.SizeOf(invoke);
+                invoke.iVerb = id;
+                invoke.nShow = SW_SHOWNORMAL;
+                contextMenu2.Instance.InvokeCommand(ref invoke);
+                return string.Empty;
+            }
         }
     }
 }

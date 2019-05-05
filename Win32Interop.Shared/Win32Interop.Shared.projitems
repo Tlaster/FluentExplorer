@@ -9,6 +9,7 @@
     <Import_RootNamespace>Win32Interop.Shared</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)Models\ContextMenuAction.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Models\MenuInfo.cs" />
   </ItemGroup>
 </Project>

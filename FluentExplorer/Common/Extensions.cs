@@ -3,11 +3,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.Foundation;
 
 namespace FluentExplorer.Common
 {
     internal static class Extensions
     {
+        public static void FireAndForget<T>(this IAsyncOperation<T> task)
+        {
+
+        }
+
         public static void FireAndForget(this Task task)
         {
 
