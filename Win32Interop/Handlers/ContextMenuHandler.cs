@@ -134,23 +134,30 @@ namespace Win32Interop.Handlers
             using var contextMenu2 = new ComObjDisposable<IContextMenu2>(
                 Marshal.GetTypedObjectForIUnknown(contextMenuPtr2.DangerousGetHandle(), typeof(IContextMenu2)) as
                     IContextMenu2);
-            if (item.Type == ContextMenuAction.ActionType.ShowMenu)
+            switch (item.Type)
             {
-                var res = GenerateMenuInfo(menu.DangerousGetHandle(), contextMenu.Instance,
-                    contextMenu3.Instance);
-                return JsonConvert.SerializeObject(res);
+                case ContextMenuAction.ActionType.ShowMenu:
+                {
+                    var res = GenerateMenuInfo(menu.DangerousGetHandle(), contextMenu.Instance,
+                        contextMenu3.Instance);
+                    return JsonConvert.SerializeObject(res);
+                }
+                case ContextMenuAction.ActionType.InvokeCommand:
+                {
+                    var id = item.MenuId;
+                    const int SW_SHOWNORMAL = 1;
+                    var invoke = new CMINVOKECOMMANDINFO_ByIndex();
+                    invoke.cbSize = Marshal.SizeOf(invoke);
+                    invoke.iVerb = id;
+                    invoke.nShow = SW_SHOWNORMAL;
+                    contextMenu2.Instance.InvokeCommand(ref invoke);
+                    return string.Empty;
+                }
+                default:
+                    break;
             }
-            else
-            {
-                var id = item.MenuId;
-                const int SW_SHOWNORMAL = 1;
-                var invoke = new CMINVOKECOMMANDINFO_ByIndex();
-                invoke.cbSize = Marshal.SizeOf(invoke);
-                invoke.iVerb = id;
-                invoke.nShow = SW_SHOWNORMAL;
-                contextMenu2.Instance.InvokeCommand(ref invoke);
-                return string.Empty;
-            }
+            
+            return string.Empty;
         }
     }
 }
