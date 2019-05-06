@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.Linq;
+using System.Reflection.Metadata.Ecma335;
 using System.Threading.Tasks;
 using Windows.Storage;
 using Windows.Storage.Search;
@@ -23,7 +25,7 @@ namespace FluentExplorer.ViewModels
             {
                 Parent = parentPathModel
             };
-            Init();
+            _query = CurrentFolder.CreateItemQuery();
         }
 
         public ObservableCollection<IStorageItem> StorageItems { get; } = new ObservableCollection<IStorageItem>();
@@ -32,31 +34,45 @@ namespace FluentExplorer.ViewModels
 
         public override PathModel Path { get; }
 
-        private async void Init()
-        {
-            IsLoading = true;
-            _query = CurrentFolder.CreateItemQuery();
-            await UpdateItems();
-            _query.ContentsChanged += QueryOnContentsChanged;
-
-            IsLoading = false;
-        }
 
         private async Task UpdateItems()
         {
+            if (IsLoading)
+            {
+                return;
+            }
+
+            IsLoading = true;
             var items = await _query.GetItemsAsync();
-            DispatcherHelper.ExecuteOnUIThreadAsync(() =>
+            if (items.SequenceEqual(StorageItems, new GenericCompare<IStorageItem>(item => item.Name)))
+            {
+                IsLoading = false;
+                return;
+            }
+            await DispatcherHelper.ExecuteOnUIThreadAsync(() =>
             {
                 StorageItems.Clear();
                 foreach (var item in items)
                 {
                     StorageItems.Add(item);
                 }
-            }).FireAndForget();
+            });
+            IsLoading = false;
         }
 
         private void QueryOnContentsChanged(IStorageQueryResultBase sender, object args)
         {
+            UpdateItems().FireAndForget();
+        }
+
+        public void OnLeave()
+        {
+            _query.ContentsChanged -= QueryOnContentsChanged;
+        }
+
+        public void OnEnter()
+        {
+            _query.ContentsChanged += QueryOnContentsChanged;
             UpdateItems().FireAndForget();
         }
 

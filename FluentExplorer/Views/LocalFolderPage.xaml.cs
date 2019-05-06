@@ -138,10 +138,17 @@ namespace FluentExplorer.Views
                 }
         }
 
+        protected override void OnNavigatedFrom(NavigationEventArgs e)
+        {
+            base.OnNavigatedFrom(e);
+            (DataContext as LocalFolderViewModel).OnLeave();
+        }
+
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
             DataContext = e.Parameter;
+            (DataContext as LocalFolderViewModel).OnEnter();
         }
 
 

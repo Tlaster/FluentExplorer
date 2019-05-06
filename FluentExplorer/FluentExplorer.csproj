@@ -129,6 +129,7 @@
     </Compile>
     <Compile Include="Common\Converters\NullToVisibilityConverter.cs" />
     <Compile Include="Common\Extensions.cs" />
+    <Compile Include="Common\GenericCompare.cs" />
     <Compile Include="Common\PermissionHelper.cs" />
     <Compile Include="Common\RelayCommand.cs" />
     <Compile Include="Controls\IconButton.xaml.cs">
