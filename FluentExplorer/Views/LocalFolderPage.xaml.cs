@@ -28,13 +28,6 @@ namespace FluentExplorer.Views
             InitializeComponent();
         }
 
-        protected override void OnTapped(TappedRoutedEventArgs e)
-        {
-            base.OnTapped(e);
-            if (e.OriginalSource is FrameworkElement element && !(element.DataContext is IStorageItem))
-                ItemsGridView.SelectedItems.Clear();
-        }
-
         private List<MenuFlyoutItemBase> GenerateMenu(string folderPath, List<MenuInfo> menuInfos)
         {
             return menuInfos.Select(it =>
@@ -112,9 +105,11 @@ namespace FluentExplorer.Views
             if (e.OriginalSource is FrameworkElement element)
                 switch (element.DataContext)
                 {
-                    case IStorageItem folder:
-                        if (!ItemsGridView.SelectedItems.Any() && !ItemsGridView.SelectedItems.Contains(folder))
-                            ItemsGridView.SelectedItems.Add(folder);
+                    case IStorageItem storageItem:
+                        if (!ItemsView.SelectedItems.Any() && !ItemsView.SelectedItems.Contains(storageItem))
+                            ItemsView.SelectedItems.Add(storageItem);
+                        //(storageItem as StorageFolder)
+                        //storageItem.DateCreated
 
                         var result = await App.Connection.SendMessageAsync(new ValueSet
                         {
@@ -123,13 +118,13 @@ namespace FluentExplorer.Views
                                 "data", JsonConvert.SerializeObject(new ContextMenuAction
                                 {
                                     Type = ContextMenuAction.ActionType.ShowMenu,
-                                    Path = folder.Path
+                                    Path = storageItem.Path
                                 })
                             }
                         });
                         var menu = JsonConvert.DeserializeObject<List<MenuInfo>>(result.Message["data"].ToString());
                         var menuFlyout = new MenuFlyout();
-                        GenerateMenu(folder.Path, menu).ForEach(it => menuFlyout.Items.Add(it));
+                        GenerateMenu(storageItem.Path, menu).ForEach(it => menuFlyout.Items.Add(it));
                         menuFlyout.ShowAt(this, e.GetPosition(this));
                         //FolderFlyout.ShowAt(this, e.GetPosition(this));
                         break;

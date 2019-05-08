@@ -9,15 +9,21 @@
     xmlns:viewModels="using:FluentExplorer.ViewModels"
     xmlns:controls1="using:FluentExplorer.Controls"
     xmlns:storage="using:Windows.Storage"
+    xmlns:controls2="using:Microsoft.Toolkit.Uwp.UI.Controls"
     mc:Ignorable="d"
     d:DataContext="{d:DesignInstance viewModels:LocalFolderViewModel}">
 
-    <GridView 
-        Name="ItemsGridView"
+    <controls1:ItemsView 
+        DisplayMode="{x:Bind DataContext.(viewModels:LocalFolderViewModel.DisplayMode), Mode=OneWay}"
+        x:Name="ItemsView"
         SelectionMode="Extended"
         DoubleTapped="GridViewDoubleTapped"
         ItemsSource="{x:Bind DataContext.(viewModels:LocalFolderViewModel.StorageItems), Mode=OneWay}">
-        <GridView.ItemTemplate>
+        <controls1:ItemsView.Columns>
+            <controls2:DataGridTextColumn Binding="{Binding Name}" Header="Name" />
+            <controls2:DataGridTextColumn Binding="{Binding DateCreated}" Header="DateCreated"/>
+        </controls1:ItemsView.Columns>
+        <controls1:ItemsView.GridTemplate>
             <DataTemplate x:DataType="storage:IStorageItem">
                 <Grid DataContext="{x:Bind}" Padding="4">
                     <Grid.ColumnDefinitions>
@@ -28,6 +34,14 @@
                     <TextBlock TextWrapping="WrapWholeWords" MaxLines="2" TextTrimming="CharacterEllipsis" Grid.Column="1" Text="{x:Bind Name}" />
                 </Grid>
             </DataTemplate>
-        </GridView.ItemTemplate>
-    </GridView>
+        </controls1:ItemsView.GridTemplate>
+        <controls1:ItemsView.ListTemplate>
+            <DataTemplate x:DataType="storage:IStorageItem">
+                <StackPanel Orientation="Horizontal" DataContext="{x:Bind}" Padding="4">
+                    <controls1:StorageItemImage Margin="0, 0, 8, 0" Width="{Binding ElementName=TitleTextBlock, Path=ActualHeight}" Height="{Binding ElementName=TitleTextBlock, Path=ActualHeight}" StorageItem="{x:Bind}" />
+                    <TextBlock TextWrapping="WrapWholeWords" MaxLines="1" Name="TitleTextBlock"  TextTrimming="CharacterEllipsis" Grid.Column="1" Text="{x:Bind Name}" />
+                </StackPanel>
+            </DataTemplate>
+        </controls1:ItemsView.ListTemplate>
+    </controls1:ItemsView>
 </Page>

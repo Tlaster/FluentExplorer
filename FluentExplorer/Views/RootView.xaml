@@ -8,6 +8,7 @@
     mc:Ignorable="d"
     xmlns:controls1="using:FluentExplorer.Controls"
     xmlns:controls2="using:Microsoft.Toolkit.Uwp.UI.Controls"
+    xmlns:icon="using:Bug10.Icon"
     d:DesignHeight="300"
     d:DesignWidth="400">
 
@@ -85,6 +86,34 @@
                                 <SymbolIcon Symbol="Rename"/>
                             </controls1:IconButton.Icon>
                         </controls1:IconButton>
+                        <DropDownButton>
+                            <DropDownButton.Content>
+                                <StackPanel Orientation="Horizontal">
+                                    <icon:IconView Icon="AllApps"/>
+                                    <TextBlock Text="Display Mode"/>
+                                </StackPanel>
+                            </DropDownButton.Content>
+                            <DropDownButton.Flyout>
+                                <MenuFlyout>
+                                    <MenuFlyoutItem Text="List" Click="DisplayModeMenuClicked">
+                                        <MenuFlyoutItem.Icon>
+                                            <icon:IconView Icon="List"/>
+                                        </MenuFlyoutItem.Icon>
+                                    </MenuFlyoutItem>
+                                    <MenuFlyoutItem Text="Grid" Click="DisplayModeMenuClicked">
+                                        <MenuFlyoutItem.Icon>
+                                            <icon:IconView Icon="GridView"/>
+                                        </MenuFlyoutItem.Icon>
+                                    </MenuFlyoutItem>
+                                    <MenuFlyoutItem Text="DataGrid" Click="DisplayModeMenuClicked">
+                                        <MenuFlyoutItem.Icon>
+                                            <icon:IconView Icon="TiltDown"/>
+                                        </MenuFlyoutItem.Icon>
+                                    </MenuFlyoutItem>
+                                </MenuFlyout>
+                            </DropDownButton.Flyout>
+
+                        </DropDownButton>
                     </StackPanel>
                 </PivotItem>
                 <PivotItem Header="Share"></PivotItem>

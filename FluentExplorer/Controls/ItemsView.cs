@@ -7,7 +7,7 @@ using System.Linq;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
-using Microsoft.Toolkit.Extensions;
+using FluentExplorer.Common;
 using Microsoft.Toolkit.Uwp.UI.Controls;
 
 // The Templated Control item template is documented at https://go.microsoft.com/fwlink/?LinkId=234235
@@ -39,7 +39,7 @@ namespace FluentExplorer.Controls
 
         public static readonly DependencyProperty DisplayModeProperty = DependencyProperty.Register(
             nameof(DisplayMode), typeof(Mode), typeof(ItemsView),
-            new PropertyMetadata(default, OnPropertyChangedCallback));
+            new PropertyMetadata(Mode.List, OnPropertyChangedCallback));
 
         public static readonly DependencyProperty ItemsSourceProperty = DependencyProperty.Register(
             nameof(ItemsSource), typeof(object), typeof(ItemsView), new PropertyMetadata(default));
@@ -54,7 +54,10 @@ namespace FluentExplorer.Controls
         {
             DefaultStyleKey = typeof(ItemsView);
             _selectedItems.CollectionChanged += OnSelectedItemsCollectionChanged;
+            Columns.CollectionChanged += ColumnsOnCollectionChanged;
         }
+
+        public ObservableCollection<DataGridColumn> Columns { get; } = new ObservableCollection<DataGridColumn>();
 
         public IList<object> SelectedItems => _selectedItems;
 
@@ -93,7 +96,15 @@ namespace FluentExplorer.Controls
             get => GetValue(ItemsSourceProperty);
             set => SetValue(ItemsSourceProperty, value);
         }
-        
+
+        private void ColumnsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            if (_itemsDataGrid == null) return;
+
+            _itemsDataGrid.Columns.AddAll(e.NewStartingIndex, e.NewItems);
+            _itemsDataGrid.Columns.RemoveAll(e.OldStartingIndex, e.OldItems);
+        }
+
         private static void OnPropertyChangedCallback(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             if (e.Property == DisplayModeProperty)
@@ -102,7 +113,7 @@ namespace FluentExplorer.Controls
 
         private void UpdateDisplayMode(Mode mode)
         {
-            if (_itemsDataGrid == null) return;
+            if (_itemsDataGrid == null || _itemsGridView == null || _itemsListView == null) return;
 
             _itemsDataGrid.Visibility = Visibility.Collapsed;
             _itemsGridView.Visibility = Visibility.Collapsed;
@@ -131,13 +142,13 @@ namespace FluentExplorer.Controls
             {
                 var type = element.DataContext?.GetType();
                 var list = items.Cast<object>().ToList();
-                var targetType = list.FirstOrDefault()?.GetType(); 
+                var targetType = list.FirstOrDefault()?.GetType();
                 if (type != null && targetType != null && type != targetType)
                 {
-                    // TODO: clear selected items
+                    _selectedItems.Clear();
+                    e.Handled = true;
                 }
             }
-
         }
 
         protected override void OnApplyTemplate()
@@ -149,16 +160,67 @@ namespace FluentExplorer.Controls
             _itemsGridView.SelectionChanged += OnSelectionChanged;
             _itemsListView.SelectionChanged += OnSelectionChanged;
             _itemsDataGrid.SelectionChanged += OnSelectionChanged;
+            UpdateDisplayMode(DisplayMode);
+            _itemsDataGrid.Columns.AddAll(Columns);
         }
 
         private void OnSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            
+            switch (sender)
+            {
+                case GridView gridView:
+                    if (gridView.IsVisible())
+                    {
+                        _itemsListView.SelectedItems.AddAll(e.AddedItems);
+                        _itemsListView.SelectedItems.RemoveAll(e.RemovedItems);
+                        _itemsDataGrid.SelectedItems.AddAll(e.AddedItems);
+                        _itemsDataGrid.SelectedItems.RemoveAll(e.RemovedItems);
+                    }
+
+                    break;
+                case ListView listView:
+                    if (listView.IsVisible())
+                    {
+                        _itemsGridView.SelectedItems.AddAll(e.AddedItems);
+                        _itemsGridView.SelectedItems.RemoveAll(e.RemovedItems);
+                        _itemsDataGrid.SelectedItems.AddAll(e.AddedItems);
+                        _itemsDataGrid.SelectedItems.RemoveAll(e.RemovedItems);
+                    }
+
+                    break;
+                case DataGrid dataGrid:
+                    if (dataGrid.IsVisible())
+                    {
+                        _itemsListView.SelectedItems.AddAll(e.AddedItems);
+                        _itemsListView.SelectedItems.RemoveAll(e.RemovedItems);
+                        _itemsDataGrid.SelectedItems.AddAll(e.AddedItems);
+                        _itemsDataGrid.SelectedItems.RemoveAll(e.RemovedItems);
+                    }
+
+                    break;
+            }
+
+            _selectedItems.AddAll(e.AddedItems);
+            _selectedItems.RemoveAll(e.RemovedItems);
         }
 
         private void OnSelectedItemsCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            
+            if (_itemsListView.IsVisible())
+            {
+                _itemsListView.SelectedItems.AddAll(e.NewItems?.Cast<object>());
+                _itemsListView.SelectedItems.RemoveAll(e.OldItems?.Cast<object>());
+            }
+            else if (_itemsGridView.IsVisible())
+            {
+                _itemsGridView.SelectedItems.AddAll(e.NewItems?.Cast<object>());
+                _itemsGridView.SelectedItems.RemoveAll(e.OldItems?.Cast<object>());
+            }
+            else if (_itemsDataGrid.IsVisible())
+            {
+                _itemsDataGrid.SelectedItems.AddAll(e.NewItems);
+                _itemsDataGrid.SelectedItems.RemoveAll(e.OldItems);
+            }
         }
     }
 }

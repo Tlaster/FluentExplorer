@@ -9,10 +9,12 @@
     xmlns:controls2="using:Microsoft.Toolkit.Uwp.UI.Controls">
 
     <Style TargetType="controls:StorageItemImage">
+        <Setter Property="Width" Value="50"/>
+        <Setter Property="Height" Value="50"/>
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="controls:StorageItemImage">
-                    <Image Width="50" Height="50" Name="StorageItemImage_Image" />
+                    <Image Width="{TemplateBinding Width}" Height="{TemplateBinding Height}" Name="StorageItemImage_Image" />
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
@@ -121,6 +123,7 @@
                             SelectionMode="{TemplateBinding SelectionMode}" />
                         <controls2:DataGrid
                             Name="ItemsDataGrid"
+                            AutoGenerateColumns="False"
                             ItemsSource="{TemplateBinding ItemsSource}"
                             CanUserReorderColumns="True"
                             CanUserResizeColumns="True"

@@ -72,9 +72,11 @@ namespace FluentExplorer.Views
 
         private async void GoupClick(object sender, RoutedEventArgs e)
         {
-            if (StorageNavigationFrame.Content is FrameworkElement element && element.DataContext is FolderViewModelBase viewModel)
+            if (StorageNavigationFrame.Content is FrameworkElement element &&
+                element.DataContext is FolderViewModelBase viewModel)
             {
-                if (!await viewModel.TryGoUpAsync(StorageNavigationFrame) && StorageNavigationFrame.CurrentSourcePageType != typeof(IndexPage))
+                if (!await viewModel.TryGoUpAsync(StorageNavigationFrame) &&
+                    StorageNavigationFrame.CurrentSourcePageType != typeof(IndexPage))
                 {
                     StorageNavigationFrame.Navigate(typeof(IndexPage));
                 }
@@ -87,6 +89,7 @@ namespace FluentExplorer.Views
             {
                 return;
             }
+
             if (e.Parameter is FolderViewModelBase viewModel)
             {
                 StoragePathView.CurrentFolderPath = viewModel.Path;
@@ -126,6 +129,7 @@ namespace FluentExplorer.Views
             {
                 return IndexViewModel.Instance.Path;
             }
+
             var pathModel = new PathModel(folder.DisplayName, folder.Path);
             var temp = pathModel;
             while (folder != null)
@@ -146,13 +150,31 @@ namespace FluentExplorer.Views
         {
             if (string.IsNullOrEmpty(e.Path))
             {
-                e.Callback.Invoke(IndexViewModel.Instance.Disks.Select(it => new RequestSubFolderPathModel(it.StorageFolder.DisplayName, it.StorageFolder.Path, new SvgImageSource(new Uri("ms-appx:///Assets/HardDrive.svg")))).ToList());
+                e.Callback.Invoke(IndexViewModel.Instance.Disks.Select(it =>
+                    new RequestSubFolderPathModel(it.StorageFolder.DisplayName, it.StorageFolder.Path,
+                        new SvgImageSource(new Uri("ms-appx:///Assets/HardDrive.svg")))).ToList());
             }
             else
             {
                 var folder = await StorageFolder.GetFolderFromPathAsync(e.Path);
                 var subFolders = await folder.GetFoldersAsync();
-                e.Callback.Invoke(subFolders.Select(it => new RequestSubFolderPathModel(it.Name, it.Path, new SvgImageSource(new Uri("ms-appx:///Assets/Folder.svg")))).ToList());
+                e.Callback.Invoke(subFolders.Select(it =>
+                    new RequestSubFolderPathModel(it.Name, it.Path,
+                        new SvgImageSource(new Uri("ms-appx:///Assets/Folder.svg")))).ToList());
+            }
+        }
+
+        private void DisplayModeMenuClicked(object sender, RoutedEventArgs e)
+        {
+            if (StorageNavigationFrame.Content is FrameworkElement element && element.DataContext is FolderViewModelBase viewModel)
+            {
+                viewModel.DisplayMode = (sender as MenuFlyoutItem).Text switch
+                    {
+                    "List" => ItemsView.Mode.List,
+                    "Grid" => ItemsView.Mode.Grid,
+                    "DataGrid" => ItemsView.Mode.DataGrid,
+                    _ => throw new ArgumentOutOfRangeException(),
+                    };
             }
         }
     }

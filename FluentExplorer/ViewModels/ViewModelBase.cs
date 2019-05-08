@@ -12,6 +12,18 @@ namespace FluentExplorer.ViewModels
 {
     public abstract class FolderViewModelBase : ViewModelBase
     {
+        private ItemsView.Mode _displayMode = ItemsView.Mode.Grid;
+
+        public ItemsView.Mode DisplayMode
+        {
+            get => _displayMode;
+            set
+            {
+                _displayMode = value;
+                OnPropertyChanged();
+            }
+        }
+
         public abstract PathModel Path { get; }
         public abstract Task<bool> TryGoUpAsync(Frame frame);
     }

@@ -16,7 +16,7 @@ namespace FluentExplorer.ViewModels
 {
     public class LocalFolderViewModel : FolderViewModelBase
     {
-        private StorageItemQueryResult _query;
+        private readonly StorageItemQueryResult _query;
 
         public LocalFolderViewModel(StorageFolder folder, PathModel parentPathModel)
         {
@@ -34,7 +34,6 @@ namespace FluentExplorer.ViewModels
 
         public override PathModel Path { get; }
 
-
         private async Task UpdateItems()
         {
             if (IsLoading)
@@ -44,7 +43,7 @@ namespace FluentExplorer.ViewModels
 
             IsLoading = true;
             var items = await _query.GetItemsAsync();
-            if (items.SequenceEqual(StorageItems, new GenericCompare<IStorageItem>(item => item.Name)))
+            if (items.SequenceEqual(StorageItems, new GenericComparer<IStorageItem>(item => item.Name)))
             {
                 IsLoading = false;
                 return;
