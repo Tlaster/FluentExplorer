@@ -33,7 +33,7 @@ namespace Win32Interop
 
         private static async void ThreadProc()
         {
-            Console.WriteLine(DateTime.Now.TimeOfDay + "\t(a)ThreadProc Start!!");
+            Console.WriteLine(DateTime.Now.TimeOfDay + "\tThreadProc Start!!");
 
             _connection = new AppServiceConnection
             {
@@ -73,7 +73,7 @@ namespace Win32Interop
         private static async void Connection_RequestReceived(AppServiceConnection sender,
             AppServiceRequestReceivedEventArgs args)
         {
-            Console.WriteLine(DateTime.Now.TimeOfDay + "\t(b) Get message from UWP!");
+            Console.WriteLine(DateTime.Now.TimeOfDay + "\tGet message from UWP!");
             var type = args.Request.Message["type"] as string;
             if (type == "Close")
             {

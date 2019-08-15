@@ -2,10 +2,12 @@
     x:Class="FluentExplorer.App"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:FluentExplorer">
+    xmlns:local="using:FluentExplorer"
+    xmlns:converters="using:FluentExplorer.Common.Converters">
 
     <Application.Resources>
         <ResourceDictionary>
+            <converters:DateHumanizerConverter x:Key="DateHumanizerConverter"/>
             <Thickness x:Key="PivotItemMargin">0</Thickness>
             <Style TargetType="GridViewItem">
                 <Setter Property="HorizontalContentAlignment" Value="Stretch"></Setter>

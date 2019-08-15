@@ -20,8 +20,18 @@
         DoubleTapped="GridViewDoubleTapped"
         ItemsSource="{x:Bind DataContext.(viewModels:LocalFolderViewModel.StorageItems), Mode=OneWay}">
         <controls1:ItemsView.Columns>
-            <controls2:DataGridTextColumn Binding="{Binding Name}" Header="Name" />
-            <controls2:DataGridTextColumn Binding="{Binding DateCreated}" Header="DateCreated"/>
+            <controls2:DataGridTemplateColumn Header="Name">
+                <controls2:DataGridTemplateColumn.CellTemplate>
+                    <DataTemplate x:DataType="storage:IStorageItem">
+                        <StackPanel Orientation="Horizontal" DataContext="{Binding}" Padding="4">
+                            <controls1:StorageItemImage Margin="0, 0, 8, 0" Width="{Binding ElementName=TitleTextBlock, Path=ActualHeight}" Height="{Binding ElementName=TitleTextBlock, Path=ActualHeight}" StorageItem="{Binding}" />
+                            <TextBlock TextWrapping="WrapWholeWords" VerticalAlignment="Center" MaxLines="1" Name="TitleTextBlock"  TextTrimming="CharacterEllipsis" Text="{Binding Name}" />
+                        </StackPanel>
+                    </DataTemplate>
+                </controls2:DataGridTemplateColumn.CellTemplate>
+            </controls2:DataGridTemplateColumn>
+            <controls2:DataGridTextColumn Binding="{Binding DateCreated, Converter={StaticResource DateHumanizerConverter}}" Header="DateCreated"/>
+            <controls2:DataGridTextColumn Binding="{Binding DisplayType}" Header="Type"/>
         </controls1:ItemsView.Columns>
         <controls1:ItemsView.GridTemplate>
             <DataTemplate x:DataType="storage:IStorageItem">
@@ -39,7 +49,7 @@
             <DataTemplate x:DataType="storage:IStorageItem">
                 <StackPanel Orientation="Horizontal" DataContext="{x:Bind}" Padding="4">
                     <controls1:StorageItemImage Margin="0, 0, 8, 0" Width="{Binding ElementName=TitleTextBlock, Path=ActualHeight}" Height="{Binding ElementName=TitleTextBlock, Path=ActualHeight}" StorageItem="{x:Bind}" />
-                    <TextBlock TextWrapping="WrapWholeWords" MaxLines="1" Name="TitleTextBlock"  TextTrimming="CharacterEllipsis" Grid.Column="1" Text="{x:Bind Name}" />
+                    <TextBlock TextWrapping="WrapWholeWords" MaxLines="1" VerticalAlignment="Center" Name="TitleTextBlock"  TextTrimming="CharacterEllipsis" Text="{x:Bind Name}" />
                 </StackPanel>
             </DataTemplate>
         </controls1:ItemsView.ListTemplate>

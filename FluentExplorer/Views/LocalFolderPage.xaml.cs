@@ -110,7 +110,6 @@ namespace FluentExplorer.Views
                             ItemsView.SelectedItems.Add(storageItem);
                         //(storageItem as StorageFolder)
                         //storageItem.DateCreated
-
                         var result = await App.Connection.SendMessageAsync(new ValueSet
                         {
                             {"type", "ContextMenu"},

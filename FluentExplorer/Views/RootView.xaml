@@ -9,6 +9,9 @@
     xmlns:controls1="using:FluentExplorer.Controls"
     xmlns:controls2="using:Microsoft.Toolkit.Uwp.UI.Controls"
     xmlns:icon="using:Bug10.Icon"
+    xmlns:controls="using:Microsoft.UI.Xaml.Controls"
+    xmlns:models="using:FluentExplorer.Models"
+    xmlns:viewModel="using:FluentExplorer.ViewModels"
     d:DesignHeight="300"
     d:DesignWidth="400">
 
@@ -22,8 +25,21 @@
         <ColumnDefinition Width="*" />
     </Grid.ColumnDefinitions>
 
-    <Grid Grid.Row="2" Grid.Column="0" Background="{ThemeResource SystemControlAcrylicWindowBrush}" Width="200">
-        <!--<controls:TreeView />-->
+    <Grid Grid.Row="2" Grid.Column="0" Background="{ThemeResource SystemControlAcrylicWindowBrush}" Width="300">
+        <controls:TreeView SelectionMode="None"  ItemsSource="{x:Bind viewModel:IndexViewModel.Instance.TreeViewItems}">
+            <controls:TreeView.ItemTemplate>
+                <DataTemplate x:DataType="models:TreeViewItemModel">
+                    <controls:TreeViewItem ItemsSource="{x:Bind SubFolders}" IsExpanded="{x:Bind IsExpanded, Mode=TwoWay}">
+                        <controls:TreeViewItem.Content>
+                            <StackPanel Orientation="Horizontal">
+                                <controls1:StorageItemImage Margin="0, 0, 8, 0" Width="{Binding ElementName=TitleTextBlock, Path=ActualHeight}" Height="{Binding ElementName=TitleTextBlock, Path=ActualHeight}" StorageItem="{x:Bind CurrentFolder}"/>
+                                <TextBlock Name="TitleTextBlock" Text="{x:Bind CurrentFolder.DisplayName}"/>
+                            </StackPanel>
+                        </controls:TreeViewItem.Content>
+                    </controls:TreeViewItem>
+                </DataTemplate>
+            </controls:TreeView.ItemTemplate>
+        </controls:TreeView>
     </Grid>
     <controls2:DropShadowPanel Grid.Row="2" Grid.Column="1" BlurRadius="16" Color="Gray" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
         <Frame Navigated="StorageNavigationFrame_OnNavigated" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
@@ -94,7 +110,7 @@
                                 </StackPanel>
                             </DropDownButton.Content>
                             <DropDownButton.Flyout>
-                                <MenuFlyout>
+                                <MenuFlyout Placement="Bottom">
                                     <MenuFlyoutItem Text="List" Click="DisplayModeMenuClicked">
                                         <MenuFlyoutItem.Icon>
                                             <icon:IconView Icon="List"/>

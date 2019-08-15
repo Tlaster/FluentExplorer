@@ -1,11 +1,11 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
 using Win32Interop.Shared.Models;
 using Win32Interop.Shell;
 
@@ -42,10 +42,10 @@ namespace Win32Interop.Handlers
             {
                 var cch = GetTextLength(menu, it, true) + 1;
                 var itemInfo = new MENUITEMINFO();
-                itemInfo.cbSize = (uint) Marshal.SizeOf(itemInfo);
+                itemInfo.cbSize = (uint)Marshal.SizeOf(itemInfo);
                 itemInfo.fMask = MIIM.MIIM_STRING | MIIM.MIIM_SUBMENU | MIIM.MIIM_ID;
                 itemInfo.cch = cch;
-                itemInfo.dwTypeData = Marshal.AllocCoTaskMem((int) cch * sizeof(char));
+                itemInfo.dwTypeData = Marshal.AllocCoTaskMem((int)cch * sizeof(char));
                 itemInfo.hSubMenu = IntPtr.Zero;
                 User32.GetMenuItemInfo(menu, it, true, ref itemInfo);
                 var title = Marshal.PtrToStringAuto(itemInfo.dwTypeData);
@@ -137,26 +137,36 @@ namespace Win32Interop.Handlers
             switch (item.Type)
             {
                 case ContextMenuAction.ActionType.ShowMenu:
-                {
-                    var res = GenerateMenuInfo(menu.DangerousGetHandle(), contextMenu.Instance,
-                        contextMenu3.Instance);
-                    return JsonConvert.SerializeObject(res);
-                }
+                    {
+                        Console.WriteLine(DateTime.Now.TimeOfDay + "\tShow menu request");
+                        var res = GenerateMenuInfo(menu.DangerousGetHandle(), contextMenu.Instance,
+                            contextMenu3.Instance);
+                        return JsonConvert.SerializeObject(res);
+                    }
                 case ContextMenuAction.ActionType.InvokeCommand:
-                {
-                    var id = item.MenuId;
-                    const int SW_SHOWNORMAL = 1;
-                    var invoke = new CMINVOKECOMMANDINFO_ByIndex();
-                    invoke.cbSize = Marshal.SizeOf(invoke);
-                    invoke.iVerb = id;
-                    invoke.nShow = SW_SHOWNORMAL;
-                    contextMenu2.Instance.InvokeCommand(ref invoke);
-                    return string.Empty;
-                }
+                    {
+                        Console.WriteLine(DateTime.Now.TimeOfDay + "\tIncoke command request");
+                        var id = item.MenuId;
+                        const int SW_SHOWNORMAL = 1;
+                        var invoke = new CMINVOKECOMMANDINFO_ByIndex();
+                        invoke.cbSize = Marshal.SizeOf(invoke);
+                        invoke.iVerb = id;
+                        invoke.nShow = SW_SHOWNORMAL;
+                        try
+                        {
+                            contextMenu2.Instance.InvokeCommand(ref invoke);
+                        }
+                        catch (COMException)
+                        {
+                            Console.WriteLine(DateTime.Now.TimeOfDay + "\tA COMException was thrown from invoke command");
+                            // Do nothing
+                        }
+                        return string.Empty;
+                    }
                 default:
                     break;
             }
-            
+
             return string.Empty;
         }
     }

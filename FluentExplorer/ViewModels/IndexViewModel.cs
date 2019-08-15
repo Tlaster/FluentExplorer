@@ -16,9 +16,8 @@ namespace FluentExplorer.ViewModels
     public class IndexViewModel : FolderViewModelBase
     {
         public static IndexViewModel Instance { get; } = new IndexViewModel();
-
         public ObservableCollection<DiskModel> Disks { get; } = new ObservableCollection<DiskModel>();
-
+        public ObservableCollection<TreeViewItemModel> TreeViewItems { get; } = new ObservableCollection<TreeViewItemModel>();
         private IndexViewModel()
         {
             Init();
@@ -30,6 +29,8 @@ namespace FluentExplorer.ViewModels
             var list = new[] { "System.FreeSpace", "System.Capacity" };
             var folders = await Task.WhenAll(DriveInfo.GetDrives().Select(it => it.Name)
                 .Select(async it => await StorageFolder.GetFolderFromPathAsync(it)));
+            var treeViewItems = new ObservableCollection<TreeViewItemModel>(folders.Select(it => new TreeViewItemModel(it, true)));
+            TreeViewItems.AddAll(treeViewItems);
             var properties = await Task.WhenAll(folders.Select(async it => new
             {
                 size = await it.Properties.RetrievePropertiesAsync(list),

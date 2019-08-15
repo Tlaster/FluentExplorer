@@ -128,6 +128,7 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Common\Converters\DateHumanizerConverter.cs" />
     <Compile Include="Common\Converters\NullToVisibilityConverter.cs" />
     <Compile Include="Common\Extensions.cs" />
     <Compile Include="Common\GenericComparer.cs" />
@@ -142,6 +143,7 @@
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Models\TreeViewItemModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Models\DiskModel.cs" />
     <Compile Include="ViewModels\IndexViewModel.cs" />

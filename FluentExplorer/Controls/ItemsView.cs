@@ -162,6 +162,11 @@ namespace FluentExplorer.Controls
             _itemsDataGrid.SelectionChanged += OnSelectionChanged;
             UpdateDisplayMode(DisplayMode);
             _itemsDataGrid.Columns.AddAll(Columns);
+            _itemsDataGrid.Sorting += ItemsDataGridOnSorting;
+        }
+
+        private void ItemsDataGridOnSorting(object sender, DataGridColumnEventArgs e)
+        {
         }
 
         private void OnSelectionChanged(object sender, SelectionChangedEventArgs e)
